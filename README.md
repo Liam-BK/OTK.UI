@@ -13,7 +13,7 @@ A cross platform UI library for OpenTK with embedded resource support.
 
 1. Clone or download the repository.
 2. Add OTK.UI as a project reference in your OpenTK project.
-3. Make sure your project has the textures, fonts and XML layouts. OTK.UI does not come pre-packaged with those resources.
+3. Make sure your project has the necessary textures, fonts and XML layouts you wish to use in your user interface. OTK.UI does not come pre-packaged with those resources.
 
 ## Dependencies
 
