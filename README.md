@@ -26,6 +26,47 @@ OTK.UI depends on a number of third party libraries.
 
 Make sure these dependencies are installed via NuGet in your project before using OTK.UI
 
+## Contributing
+
+Contributions to OTK.UI are welcome. You can help by fixing bugs, adding features, improving documentation or providing example layouts
+
+### How to Contribute
+
+1. **Fork the repository** and clone it locally.
+
+```bash
+# Replace your_username with your GitHub username.
+git clone https://github.com/your_username/otk.ui.git
+cd OTK.UI
+```
+
+2. Create a new branch for your changes
+
+```bash
+git checkout -b feature/my_change
+```
+
+3. Make your changes
+
+- Follow the existing code style
+- Test embedded resources, layouts and UI components
+- Update documentation as necessary
+
+4. Commit and Push your branch
+
+```bash
+git add .
+git commit -m "Add a brief description of your changes here."
+git push origin feature/my_change
+```
+
+5. Open a Pull request against the main repository. Include a description of your changes and any relevant examples.
+
+## Reporting issues
+
+- Report bugs or issues under the Issues tab with clear steps to reproduce.
+- Feature requests and suggestions are welcome as well.
+
 ### Example
 
 Inside your custom GamePanel OnLoad method:
