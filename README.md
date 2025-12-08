@@ -76,7 +76,7 @@ UIBase.Window = this;
 TextureManager.LoadTexture("ButtonTexture.png");
 FontManager.LoadFont("DefaultFont.ttf");
 LayoutLoader loader = new LayoutLoader("LoadedLayout.xml");
-var button = loader.Get<Button>("ExitButton");
+var button = loader.Get<Button>("LoadedButton");
 if (button is not null)
 {
     button.Released += (MouseButton) =>
