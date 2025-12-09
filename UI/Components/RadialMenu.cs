@@ -163,11 +163,11 @@ namespace OTK.UI.Components
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
             var origin = element.Element("Origin");
             if (origin is null) throw new FormatException($"NinePatch: {name} is missing required field Bounds.");
-            var radius = float.Parse(element.Element("Size")?.Value ?? "50");
+            var radius = float.Parse(element.Element("Radius")?.Value ?? "50");
             var iconInset = float.Parse(element.Element("IconInset")?.Value ?? "10");
             var titleSize = float.Parse(element.Element("TitleSize")?.Value ?? "30");
             var descriptionSize = float.Parse(element.Element("DescriptionSize")?.Value ?? "20");
-            var DeadZoneRadius = float.Parse(element.Element("DeadZoneRadius")?.Value ?? "20");
+            var tintExclusionRadius = float.Parse(element.Element("TintExclusionRadius")?.Value ?? "20");
             var isVisible = bool.Parse(element.Element("IsVisible")?.Value ?? "True");
             var texture = element.Element("Texture")?.Value.Trim() ?? string.Empty;
             var color = element.Element("ColorRGB")?.Value ?? "1, 1, 1";
@@ -198,7 +198,7 @@ namespace OTK.UI.Components
                 foreach (var icon in iconData.Elements())
                 {
                     var temp = new IconData();
-                    temp.IconName = icon.Element("Name")?.Value ?? string.Empty;
+                    temp.IconName = icon.Element("Title")?.Value ?? string.Empty;
                     temp.IconDescription = icon.Element("Description")?.Value ?? string.Empty;
                     temp.IconIndex = int.Parse(icon.Element("Index")?.Value ?? $"{iconDataList.Count}");
                     temp.IconTexture = icon.Element("Texture")?.Value ?? string.Empty;
@@ -211,7 +211,7 @@ namespace OTK.UI.Components
             radialMenu.IsVisible = isVisible;
             radialMenu.Colour = colorVec;
             radialMenu.HoverColour = hoverColorVec;
-            radialMenu.TintExclusionRadius = DeadZoneRadius;
+            radialMenu.TintExclusionRadius = tintExclusionRadius;
             radialMenu.ActivationKey = activationKey;
             radialMenu.controlMode = controlMode;
             if (LayoutLoader.IsFilePath(texture))

@@ -235,15 +235,6 @@ namespace OTK.UI.Utility
             Vector2 offset;
             switch (relativeOrigin)
             {
-                case RelativeOrigin.Center:
-                    offset = new Vector2(UIBase.WindowDimensions.X * 0.5f, UIBase.WindowDimensions.Y * 0.5f);
-                    break;
-                case RelativeOrigin.BottomLeft:
-                    offset = Vector2.Zero;
-                    break;
-                case RelativeOrigin.CenterLeft:
-                    offset = new Vector2(0, UIBase.WindowDimensions.Y * 0.5f);
-                    break;
                 case RelativeOrigin.TopLeft:
                     offset = new Vector2(0, UIBase.WindowDimensions.Y);
                     break;
@@ -253,14 +244,23 @@ namespace OTK.UI.Utility
                 case RelativeOrigin.TopRight:
                     offset = UIBase.WindowDimensions;
                     break;
+                case RelativeOrigin.CenterLeft:
+                    offset = new Vector2(0, UIBase.WindowDimensions.Y * 0.5f);
+                    break;
+                case RelativeOrigin.Center:
+                    offset = new Vector2(UIBase.WindowDimensions.X * 0.5f, UIBase.WindowDimensions.Y * 0.5f);
+                    break;
                 case RelativeOrigin.CenterRight:
                     offset = new Vector2(UIBase.WindowDimensions.X, UIBase.WindowDimensions.Y * 0.5f);
                     break;
-                case RelativeOrigin.BottomRight:
-                    offset = new Vector2(UIBase.WindowDimensions.X, 0);
+                case RelativeOrigin.BottomLeft:
+                    offset = Vector2.Zero;
                     break;
                 case RelativeOrigin.BottomCenter:
                     offset = new Vector2(UIBase.WindowDimensions.X * 0.5f, 0);
+                    break;
+                case RelativeOrigin.BottomRight:
+                    offset = new Vector2(UIBase.WindowDimensions.X, 0);
                     break;
                 default:
                     offset = Vector2.Zero;

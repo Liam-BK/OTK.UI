@@ -154,7 +154,7 @@ namespace OTK.UI.Components
         /// <param name="register">Whether to register the scrollbar in the UI manager (default true).</param>
         /// <returns>A new <see cref="ScrollBar"/> instance configured from XML.</returns>
         /// <exception cref="FormatException">Thrown if required XML elements are missing or invalid.</exception>
-        public static new ScrollBar Load(XElement element, bool register = true)
+        public static new ScrollBar Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");

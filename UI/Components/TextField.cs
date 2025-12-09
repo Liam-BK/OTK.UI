@@ -154,7 +154,7 @@ namespace OTK.UI.Components
         /// <exception cref="FormatException">
         /// Thrown if required fields (e.g., Name or Bounds) are missing or invalid.
         /// </exception>
-        public static TextField Load(XElement element)
+        public static new TextField Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");

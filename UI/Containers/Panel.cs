@@ -299,7 +299,7 @@ namespace OTK.UI.Containers
         /// Child elements are recursively loaded based on their type.
         /// Relative anchoring is applied if specified.
         /// </remarks>
-        public static Panel Load(XElement element)
+        public static new Panel Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -308,9 +308,7 @@ namespace OTK.UI.Containers
             var margin = float.Parse(element.Element("Margin")?.Value ?? "10", CultureInfo.InvariantCulture);
             var uvMargin = float.Parse(element.Element("UVMargin")?.Value ?? "0.5", CultureInfo.InvariantCulture);
             var titleMargin = float.Parse(element.Element("TitleMargin")?.Value ?? "0", CultureInfo.InvariantCulture);
-            Console.WriteLine($"titleMargin: {titleMargin}");
             var title = element.Element("Title")?.Value.Trim() ?? string.Empty;
-            Console.WriteLine($"title: {title}");
             var isVisible = bool.Parse(element.Element("IsVisible")?.Value ?? "True");
             var texture = element.Element("Texture")?.Value.Trim() ?? string.Empty;
             var scrollbarTexture = element.Element("ScrollBarTexture")?.Value.Trim() ?? string.Empty;

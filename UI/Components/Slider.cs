@@ -118,7 +118,7 @@ namespace OTK.UI.Components
         /// <param name="element">The <see cref="XElement"/> containing slider configuration.</param>
         /// <param name="register">Whether to register the slider in the UI manager (default true).</param>
         /// <returns>A new <see cref="Slider"/> instance configured from XML.</returns>
-        public static new Slider Load(XElement element, bool register = true)
+        public static new Slider Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");

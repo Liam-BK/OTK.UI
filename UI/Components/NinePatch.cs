@@ -155,7 +155,7 @@ namespace OTK.UI.Components
         /// <exception cref="FormatException">
         /// Thrown if required fields (such as <c>Name</c> or <c>Bounds</c>) are missing.
         /// </exception>
-        public static NinePatch Load(XElement element, bool register = true)
+        public static NinePatch Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");

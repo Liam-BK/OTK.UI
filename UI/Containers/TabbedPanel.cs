@@ -247,7 +247,7 @@ namespace OTK.UI.Containers
         /// <param name="element">The XML element describing the panel.</param>
         /// <returns>The initialized <see cref="TabbedPanel"/>.</returns>
         /// <exception cref="FormatException">Thrown if required elements or attributes are missing.</exception>
-        public static TabbedPanel Load(XElement element)
+        public static new TabbedPanel Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name))

@@ -164,7 +164,7 @@ namespace OTK.UI.Components
         /// This method handles texture loading when file paths are provided and applies
         /// text colours, rollover colours, anchor offsets, and visibility settings.
         /// </remarks>
-        public static Button Load(XElement element)
+        public static new Button Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");

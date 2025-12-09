@@ -81,7 +81,7 @@ namespace OTK.UI.Components
         /// <param name="element">The XML element containing progress bar data.</param>
         /// <returns>A fully configured <see cref="ProgressBar"/> instance.</returns>
         /// <exception cref="FormatException">Thrown if required fields are missing or invalid.</exception>
-        public static ProgressBar Load(XElement element)
+        public static new ProgressBar Load(XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
