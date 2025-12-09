@@ -5,7 +5,7 @@
 1. Pixels
 2. DPI
 
-- Name: All Elements must have a unique name for the purposes of registering the element in the LayoutLoader. Individual elements can be retrieved via Get<ElementType>("Name of element").
+- Name: All Elements must have a unique name for the purposes of registering the element in the LayoutLoader. Individual elements can be retrieved via `Get<ElementType>("Name of element")`.
 
 - Bounds: The rectangle that the element takes up. The value for Right must always be larger than the value for Left, and the value for Top must always be larger than the value for Bottom.
 
