@@ -6,13 +6,13 @@ LineDSL is a lightweight expression engine for evaluating mathematical and logic
 
 2. Create and assign variables `(var x = 10)`
 
-3. Bind external data through lambda accessors (AddLambdaRef)
+3. Bind external data through lambda accessors `(AddLambdaRef)`
 
 4. Evaluate expressions with full operator precedence, ternary logic, and function calls
 
 5. Perform lightweight scripting inside UI components, game logic, animations, or user-defined scripts
 
-- Note: LineDSL does not depend on external scripting engines and is self-contained.
+Note: LineDSL does not depend on external scripting engines and is self-contained.
 
 ## Namespaces in LineDSL
 
@@ -137,7 +137,7 @@ These are the names of the supported functions in LineDSL. Functions are case in
 
 - sqrt: The square root function.
 
-- exp: The exponential function. Can also be expressed as x^y.
+- exp: The exponential function. Returns the value of e raised to the power of x.
 
 - abs: The absolute function.
 
