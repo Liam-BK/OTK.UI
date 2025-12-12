@@ -4,6 +4,18 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <PackageID>OTK.UI</PackageID>
+    <Version>1.0.0</Version>
+    <Authors>Liam Burr-Kight</Authors>
+    <Product>OTK.UI</Product>
+    <Description>A low-friction UI library for OpenTK with XML layouts and LineDSL integration.</Description>
+    <PackageTags>OpenTK;UI;OpenGL;CSharp</PackageTags>
+    <RepositoryUrl>https://github.com/Liam-BK/OTK.UI</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Liam-BK/OTK.UI</PackageProjectUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
