@@ -138,19 +138,19 @@ namespace OTK.UI.Utility
                     if (Variables.ContainsKey(assignment[1])) throw new FormatException($"Variable {assignment[1]} is already defined.");
                     if (Constants.ContainsKey(assignment[1])) throw new FormatException($"Variable {assignment[1]} is already considered a constant.");
                     double result = EvaluateTernary(split[1]);
-                    Variables.Add(assignment[1], result);
+                    Variables.Add(assignment[1].ToLowerInvariant(), result);
                     return result;
                 }
                 else
                 {
-                    if (Constants.ContainsKey(assignment[0])) throw new FormatException($"Constants are not allowed to be modified");
-                    if (!Variables.ContainsKey(assignment[0]) && !Accessors.ContainsKey(assignment[0])) throw new FormatException($"Variable has not been defined so cannot be modified.");
+                    if (Constants.ContainsKey(assignment[0].ToLowerInvariant())) throw new FormatException($"Constants are not allowed to be modified");
+                    if (!Variables.ContainsKey(assignment[0].ToLowerInvariant()) && !Accessors.ContainsKey(assignment[0].ToLowerInvariant())) throw new FormatException($"Variable has not been defined so cannot be modified.");
                     var result = EvaluateTernary(split[1]);
-                    if (Variables.ContainsKey(assignment[0]))
-                        Variables[assignment[0]] = result;
-                    else if (Accessors.ContainsKey(assignment[0]))
+                    if (Variables.ContainsKey(assignment[0].ToLowerInvariant()))
+                        Variables[assignment[0].ToLowerInvariant()] = result;
+                    else if (Accessors.ContainsKey(assignment[0].ToLowerInvariant()))
                     {
-                        Accessors[assignment[0]].setter(result);
+                        Accessors[assignment[0].ToLowerInvariant()].setter(result);
                     }
                     return result;
                 }

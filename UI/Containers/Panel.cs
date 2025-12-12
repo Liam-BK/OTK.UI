@@ -391,7 +391,7 @@ namespace OTK.UI.Containers
                         panel.Add(TextField.Load(child));
                         break;
                     case "panel":
-                        panel.Add(Panel.Load(child));
+                        panel.Add(Load(child));
                         break;
                     case "dynamicpanel":
                         throw new ArgumentException("DynamicPanel should not be contained in a Panel");

@@ -90,7 +90,7 @@ double result = dsl.SimpleEvaluate("3 + sin(pi / 2)");
 Includes assignment, ternary operators, and variables:
 
 ```csharp
-double result = dsl.Evaluate("x = x > 5 ? x * 2 : x / 2");
+double result = dsl.Evaluate("x = gtz(x - 5) ? x * 2 : x / 2");
 ```
 
 - Ternary operator: condition ? trueExpr : falseExpr
@@ -98,6 +98,47 @@ double result = dsl.Evaluate("x = x > 5 ? x * 2 : x / 2");
 - Assignment operator: =
 
 - var keyword for creating variables
+
+## Using LineDSL with Panels
+
+- Panels, DynamicPanels and TabbedPanels have specific variables to use with ConstraintLayouts.
+- These variables are automatically assigned when you call `Panel.InitializeConstraintVariables()`.
+- This is a list of the available accessors when you use a ConstraintLayout.
+  **Note:** `[i]` where i is an integer means it is referencing the element in the Panel's underlying List at index i.
+  **Note:** LineDSL does not have an access operator like C#. `element[i].left` is instead treated as the full name of the variable.
+
+### Element variables
+
+1. element[i].left
+2. element[i].top
+3. element[i].right
+4. element[i].bottom
+5. element[i].centerx
+6. element[i].centery
+7. element[i].margin
+
+### Panel variables
+
+1. panelleft
+2. paneltop
+3. panelright
+4. panelbottom
+5. panelcenterx
+6. panelcentery
+7. scrollbarthumbposition
+8. scrollbarthumbproportion
+9. scrollbarleft
+10. contentmargin
+11. titlemargin
+
+## Setting up a constraint layout
+
+To set up a constraint layout in a panel:
+
+1. Create a ConstraintLayout instance.
+2. Populate the Constraints list with LineDSL expressions. (The number of expressions is influneced by the number of elements).
+3. Set the ApplicableLayout property of the Panel to the created ConstraintLayout instance.
+4. Call `InitializeConstraintVariables` on the Panel.
 
 ## Functions
 
