@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Xml.Linq;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OTK.UI.Interfaces;
@@ -215,11 +216,19 @@ namespace OTK.UI.Components
         public override void Draw()
         {
             if (!IsVisible) return;
+            bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
+            bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
             base.Draw();
             thumb.Colour = _thumbColour;
             if (_isActive)
                 thumb.Colour = _thumbColour * 0.5f;
             thumb.Draw();
+            if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
+            else GL.Disable(EnableCap.DepthTest);
+            if (blendEnabled) GL.Enable(EnableCap.Blend);
+            else GL.Disable(EnableCap.Blend);
         }
     }
 }

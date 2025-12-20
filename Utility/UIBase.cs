@@ -756,6 +756,10 @@ namespace OTK.UI.Utility
         public virtual void Draw()
         {
             if (!IsVisible || WindowClosing) return;
+            bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
+            bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.ScissorTest);
             var clipBounds = FindMinClipBounds();
             var clipWidth = clipBounds.Z - clipBounds.X;
@@ -767,6 +771,10 @@ namespace OTK.UI.Utility
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
             GL.Disable(EnableCap.ScissorTest);
+            if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
+            else GL.Disable(EnableCap.DepthTest);
+            if (blendEnabled) GL.Enable(EnableCap.Blend);
+            else GL.Disable(EnableCap.Blend);
         }
     }
 }

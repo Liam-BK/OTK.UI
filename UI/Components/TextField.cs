@@ -631,6 +631,10 @@ namespace OTK.UI.Components
         public override void Draw()
         {
             if (!IsVisible) return;
+            bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
+            bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
             base.Draw();
             var clipBounds = FindMinClipBounds();
             var clipWidth = clipBounds.Z - clipBounds.X;
@@ -639,6 +643,10 @@ namespace OTK.UI.Components
             GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
             text.Draw();
             GL.Disable(EnableCap.ScissorTest);
+            if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
+            else GL.Disable(EnableCap.DepthTest);
+            if (blendEnabled) GL.Enable(EnableCap.Blend);
+            else GL.Disable(EnableCap.Blend);
         }
     }
 }

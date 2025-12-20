@@ -5,6 +5,7 @@ using OTK.UI.Utility;
 using OTK.UI.Managers;
 using System.Xml.Linq;
 using System.Globalization;
+using OpenTK.Graphics.OpenGL4;
 
 namespace OTK.UI.Components
 {
@@ -390,6 +391,10 @@ namespace OTK.UI.Components
         public override void Draw()
         {
             if (!IsVisible) return;
+            bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
+            bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.Blend);
             base.Draw();
             Name.Draw();
             Description.Draw();
@@ -397,6 +402,10 @@ namespace OTK.UI.Components
             {
                 icon.Draw();
             }
+            if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
+            else GL.Disable(EnableCap.DepthTest);
+            if (blendEnabled) GL.Enable(EnableCap.Blend);
+            else GL.Disable(EnableCap.Blend);
         }
     }
 
