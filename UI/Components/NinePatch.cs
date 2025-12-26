@@ -4,6 +4,7 @@ using OTK.UI.Utility;
 using OTK.UI.Managers;
 using System.Xml.Linq;
 using System.Globalization;
+using OTK.UI.Interfaces;
 
 namespace OTK.UI.Components
 {
@@ -155,7 +156,7 @@ namespace OTK.UI.Components
         /// <exception cref="FormatException">
         /// Thrown if required fields (such as <c>Name</c> or <c>Bounds</c>) are missing.
         /// </exception>
-        public static NinePatch Load(XElement element)
+        public static NinePatch Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -188,6 +189,8 @@ namespace OTK.UI.Components
             }
             else ninePatch.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, ninePatch);
             return ninePatch;
         }
 

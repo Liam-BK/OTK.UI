@@ -247,7 +247,7 @@ namespace OTK.UI.Containers
         /// <param name="element">The XML element describing the panel.</param>
         /// <returns>The initialized <see cref="TabbedPanel"/>.</returns>
         /// <exception cref="FormatException">Thrown if required elements or attributes are missing.</exception>
-        public static new TabbedPanel Load(XElement element)
+        public static new TabbedPanel Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name))
@@ -343,42 +343,54 @@ namespace OTK.UI.Containers
                     switch (child.Name.LocalName.ToLower())
                     {
                         case "button":
-                            tabbedPanel.Add(i, Button.Load(child));
+                            var button = Button.Load(registry, child);
+                            tabbedPanel.Add(button);
                             break;
                         case "breadcrumb":
-                            tabbedPanel.Add(i, BreadCrumb.Load(child));
+                            var breadcrumb = BreadCrumb.Load(registry, child);
+                            tabbedPanel.Add(breadcrumb);
                             break;
                         case "checkbox":
-                            tabbedPanel.Add(i, CheckBox.Load(child));
+                            var checkbox = CheckBox.Load(registry, child);
+                            tabbedPanel.Add(checkbox);
                             break;
                         case "image":
-                            tabbedPanel.Add(i, Image.Load(child));
+                            var image = Image.Load(registry, child);
+                            tabbedPanel.Add(image);
                             break;
                         case "label":
-                            tabbedPanel.Add(i, Label.Load(child));
+                            var label = Label.Load(registry, child);
+                            tabbedPanel.Add(label);
                             break;
                         case "ninepatch":
-                            tabbedPanel.Add(i, NinePatch.Load(child));
+                            var ninePatch = NinePatch.Load(registry, child);
+                            tabbedPanel.Add(ninePatch);
                             break;
                         case "numericspinner":
-                            tabbedPanel.Add(i, NumericSpinner.Load(child));
+                            var numericspinner = NumericSpinner.Load(registry, child);
+                            tabbedPanel.Add(numericspinner);
                             break;
                         case "progressbar":
-                            tabbedPanel.Add(i, ProgressBar.Load(child));
+                            var progressbar = ProgressBar.Load(registry, child);
+                            tabbedPanel.Add(progressbar);
                             break;
                         case "radialmenu":
                             throw new ArgumentException("Radial menu should not be contained in a TabbedPanel");
                         case "scrollbar":
-                            tabbedPanel.Add(i, ScrollBar.Load(child));
+                            var scrollbar = ScrollBar.Load(registry, child);
+                            tabbedPanel.Add(scrollbar);
                             break;
                         case "slider":
-                            tabbedPanel.Add(i, Slider.Load(child));
+                            var slider = Slider.Load(registry, child);
+                            tabbedPanel.Add(slider);
                             break;
                         case "textfield":
-                            tabbedPanel.Add(i, TextField.Load(child));
+                            var textfield = TextField.Load(registry, child);
+                            tabbedPanel.Add(textfield);
                             break;
                         case "panel":
-                            tabbedPanel.Add(i, Panel.Load(child));
+                            var childPanel = Panel.Load(registry, child);
+                            tabbedPanel.Add(i, childPanel);
                             break;
                         case "dynamicpanel":
                             throw new ArgumentException("DynamicPanel cannot exist as a child of TabbedPanel");
@@ -390,6 +402,8 @@ namespace OTK.UI.Containers
 
             tabbedPanel.CurrentTab = 0;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, tabbedPanel);
             return tabbedPanel;
         }
 

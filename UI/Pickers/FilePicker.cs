@@ -6,6 +6,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OTK.UI.Components;
 using OTK.UI.Containers;
+using OTK.UI.Interfaces;
 using OTK.UI.Layouts;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
@@ -197,7 +198,7 @@ namespace OTK.UI.Pickers
         /// <exception cref="FormatException">
         /// Thrown if required XML fields are missing or malformed.
         /// </exception>
-        public static new FilePicker Load(XElement element)
+        public static new FilePicker Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -238,6 +239,8 @@ namespace OTK.UI.Pickers
             }
             else filePicker.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, filePicker);
             return filePicker;
         }
 

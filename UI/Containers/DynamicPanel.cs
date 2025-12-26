@@ -4,6 +4,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OTK.UI.Components;
+using OTK.UI.Interfaces;
 using OTK.UI.Layouts;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
@@ -84,7 +85,7 @@ namespace OTK.UI.Containers
         /// <remarks>
         /// Throws an exception if the XML contains a nested <c>DynamicPanel</c> or an invalid configuration.
         /// </remarks>
-        public static new DynamicPanel Load(XElement element)
+        public static new DynamicPanel Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -143,48 +144,61 @@ namespace OTK.UI.Containers
                 switch (child.Name.LocalName.ToLower())
                 {
                     case "button":
-                        dynamicPanel.Add(Button.Load(child));
+                        var button = Button.Load(registry, child);
+                        dynamicPanel.Add(button);
                         break;
                     case "breadcrumb":
-                        dynamicPanel.Add(BreadCrumb.Load(child));
+                        var breadcrumb = BreadCrumb.Load(registry, child);
+                        dynamicPanel.Add(breadcrumb);
                         break;
                     case "checkbox":
-                        dynamicPanel.Add(CheckBox.Load(child));
+                        var checkbox = CheckBox.Load(registry, child);
+                        dynamicPanel.Add(checkbox);
                         break;
                     case "image":
-                        dynamicPanel.Add(Image.Load(child));
+                        var image = Image.Load(registry, child);
+                        dynamicPanel.Add(image);
                         break;
                     case "label":
-                        dynamicPanel.Add(Label.Load(child));
+                        var label = Label.Load(registry, child);
+                        dynamicPanel.Add(label);
                         break;
                     case "ninepatch":
-                        dynamicPanel.Add(NinePatch.Load(child));
+                        var ninePatch = NinePatch.Load(registry, child);
+                        dynamicPanel.Add(ninePatch);
                         break;
                     case "numericspinner":
-                        dynamicPanel.Add(NumericSpinner.Load(child));
+                        var numericspinner = NumericSpinner.Load(registry, child);
                         break;
                     case "progressbar":
-                        dynamicPanel.Add(ProgressBar.Load(child));
+                        var progressbar = ProgressBar.Load(registry, child);
+                        dynamicPanel.Add(progressbar);
                         break;
                     case "radialmenu":
-                        throw new ArgumentException("Radial menu should not be contained in a Panel");
+                        throw new ArgumentException("RadialMenu should not be contained in a DynamicPanel");
                     case "scrollbar":
-                        dynamicPanel.Add(ScrollBar.Load(child));
+                        var scrollbar = ScrollBar.Load(registry, child);
+                        dynamicPanel.Add(scrollbar);
                         break;
                     case "slider":
-                        dynamicPanel.Add(Slider.Load(child));
+                        var slider = Slider.Load(registry, child);
+                        dynamicPanel.Add(slider);
                         break;
                     case "textfield":
-                        dynamicPanel.Add(TextField.Load(child));
+                        var textfield = TextField.Load(registry, child);
+                        dynamicPanel.Add(textfield);
                         break;
                     case "panel":
-                        dynamicPanel.Add(Panel.Load(child));
+                        var panel = Panel.Load(registry, child);
+                        dynamicPanel.Add(panel);
                         break;
                     case "dynamicpanel":
-                        throw new ArgumentException("DynamicPanel should not be contained in a Panel");
+                        throw new ArgumentException("DynamicPanel should not be contained in a DynamicPanel");
                 }
             }
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, dynamicPanel);
             return dynamicPanel;
         }
 

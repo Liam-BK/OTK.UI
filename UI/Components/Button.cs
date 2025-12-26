@@ -1,6 +1,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 using System.Globalization;
@@ -164,7 +165,7 @@ namespace OTK.UI.Components
         /// This method handles texture loading when file paths are provided and applies
         /// text colours, rollover colours, anchor offsets, and visibility settings.
         /// </remarks>
-        public static new Button Load(XElement element)
+        public static new Button Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -209,6 +210,8 @@ namespace OTK.UI.Components
             button.TimeToRollover = rollover;
             button.RolloverColour = rollOverColorVec;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, button);
             return button;
         }
 

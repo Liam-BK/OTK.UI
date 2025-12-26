@@ -6,6 +6,7 @@ using OTK.UI.Managers;
 using System.Xml.Linq;
 using System.Globalization;
 using OpenTK.Graphics.OpenGL4;
+using OTK.UI.Interfaces;
 
 namespace OTK.UI.Components
 {
@@ -158,7 +159,7 @@ namespace OTK.UI.Components
         /// <exception cref="FormatException">
         /// Thrown when required values such as <c>Name</c> or <c>Origin</c> are missing.
         /// </exception>
-        public static new RadialMenu Load(XElement element)
+        public static new RadialMenu Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -222,6 +223,8 @@ namespace OTK.UI.Components
             }
             else radialMenu.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, radialMenu);
             return radialMenu;
         }
 

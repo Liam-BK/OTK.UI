@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 
@@ -155,7 +156,7 @@ namespace OTK.UI.Components
         /// <param name="register">Whether to register the scrollbar in the UI manager (default true).</param>
         /// <returns>A new <see cref="ScrollBar"/> instance configured from XML.</returns>
         /// <exception cref="FormatException">Thrown if required XML elements are missing or invalid.</exception>
-        public static new ScrollBar Load(XElement element)
+        public static new ScrollBar Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -197,6 +198,8 @@ namespace OTK.UI.Components
             }
             else scrollbar.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, scrollbar);
             return scrollbar;
         }
 

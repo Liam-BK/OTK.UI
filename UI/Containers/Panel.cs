@@ -299,7 +299,7 @@ namespace OTK.UI.Containers
         /// Child elements are recursively loaded based on their type.
         /// Relative anchoring is applied if specified.
         /// </remarks>
-        public static new Panel Load(XElement element)
+        public static new Panel Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -356,48 +356,62 @@ namespace OTK.UI.Containers
                 switch (child.Name.LocalName.ToLower())
                 {
                     case "button":
-                        panel.Add(Button.Load(child));
+                        var button = Button.Load(registry, child);
+                        panel.Add(button);
                         break;
                     case "breadcrumb":
-                        panel.Add(BreadCrumb.Load(child));
+                        var breadcrumb = BreadCrumb.Load(registry, child);
+                        panel.Add(breadcrumb);
                         break;
                     case "checkbox":
-                        panel.Add(CheckBox.Load(child));
+                        var checkbox = CheckBox.Load(registry, child);
+                        panel.Add(checkbox);
                         break;
                     case "image":
-                        panel.Add(Image.Load(child));
+                        var image = Image.Load(registry, child);
+                        panel.Add(image);
                         break;
                     case "label":
-                        panel.Add(Label.Load(child));
+                        var label = Label.Load(registry, child);
+                        panel.Add(label);
                         break;
                     case "ninepatch":
-                        panel.Add(NinePatch.Load(child));
+                        var ninePatch = NinePatch.Load(registry, child);
+                        panel.Add(ninePatch);
                         break;
                     case "numericspinner":
-                        panel.Add(NumericSpinner.Load(child));
+                        var numericspinner = NumericSpinner.Load(registry, child);
+                        panel.Add(numericspinner);
                         break;
                     case "progressbar":
-                        panel.Add(ProgressBar.Load(child));
+                        var progressbar = ProgressBar.Load(registry, child);
+                        panel.Add(progressbar);
                         break;
                     case "radialmenu":
                         throw new ArgumentException("Radial menu should not be contained in a Panel");
                     case "scrollbar":
-                        panel.Add(ScrollBar.Load(child));
+                        var scrollbar = ScrollBar.Load(registry, child);
+                        panel.Add(scrollbar);
                         break;
                     case "slider":
-                        panel.Add(Slider.Load(child));
+                        var slider = Slider.Load(registry, child);
+                        panel.Add(slider);
                         break;
                     case "textfield":
-                        panel.Add(TextField.Load(child));
+                        var textfield = TextField.Load(registry, child);
+                        panel.Add(textfield);
                         break;
                     case "panel":
-                        panel.Add(Load(child));
+                        var childPanel = Load(registry, child);
+                        panel.Add(childPanel);
                         break;
                     case "dynamicpanel":
                         throw new ArgumentException("DynamicPanel should not be contained in a Panel");
                 }
             }
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, panel);
             return panel;
         }
 

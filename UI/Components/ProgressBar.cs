@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Xml.Linq;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 
@@ -81,7 +82,7 @@ namespace OTK.UI.Components
         /// <param name="element">The XML element containing progress bar data.</param>
         /// <returns>A fully configured <see cref="ProgressBar"/> instance.</returns>
         /// <exception cref="FormatException">Thrown if required fields are missing or invalid.</exception>
-        public static new ProgressBar Load(XElement element)
+        public static new ProgressBar Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -127,6 +128,8 @@ namespace OTK.UI.Components
             }
             else progressBar.FillTexture = fillTexture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, progressBar);
             return progressBar;
         }
 

@@ -108,56 +108,56 @@ namespace OTK.UI.Utility
                 switch (element.Name.LocalName.ToLower())
                 {
                     case "button":
-                        Register(name, Button.Load(element));
+                        Store(name, Button.Load(registry, element));
                         break;
                     case "breadcrumb":
-                        Register(name, BreadCrumb.Load(element));
+                        Store(name, BreadCrumb.Load(registry, element));
                         break;
                     case "checkbox":
-                        Register(name, CheckBox.Load(element));
+                        Store(name, CheckBox.Load(registry, element));
                         break;
                     case "image":
-                        Register(name, Image.Load(element));
+                        Store(name, Image.Load(registry, element));
                         break;
                     case "label":
-                        Register(name, Label.Load(element));
+                        Store(name, Label.Load(registry, element));
                         break;
                     case "ninepatch":
-                        Register(name, NinePatch.Load(element));
+                        Store(name, NinePatch.Load(registry, element));
                         break;
                     case "numericspinner":
-                        Register(name, NumericSpinner.Load(element));
+                        Store(name, NumericSpinner.Load(registry, element));
                         break;
                     case "progressbar":
-                        Register(name, ProgressBar.Load(element));
+                        Store(name, ProgressBar.Load(registry, element));
                         break;
                     case "radialmenu":
-                        Register(name, RadialMenu.Load(element));
+                        Store(name, RadialMenu.Load(registry, element));
                         break;
                     case "scrollbar":
-                        Register(name, ScrollBar.Load(element));
+                        Store(name, ScrollBar.Load(registry, element));
                         break;
                     case "slider":
-                        Register(name, Slider.Load(element));
+                        Store(name, Slider.Load(registry, element));
                         break;
                     case "textfield":
-                        Register(name, TextField.Load(element));
+                        Store(name, TextField.Load(registry, element));
                         break;
                     case "panel":
-                        Register(name, Panel.Load(element));
+                        Store(name, Panel.Load(registry, element));
                         break;
                     case "dynamicpanel":
-                        Register(name, DynamicPanel.Load(element));
+                        Store(name, DynamicPanel.Load(registry, element));
                         break;
                     case "tabbedpanel":
-                        Register(name, TabbedPanel.Load(element));
+                        Store(name, TabbedPanel.Load(registry, element));
                         break;
                     case "colorpicker":
                     case "colourpicker":
-                        Register(name, ColorPicker.Load(element));
+                        Store(name, ColorPicker.Load(registry, element));
                         break;
                     case "filepicker":
-                        Register(name, FilePicker.Load(element));
+                        Store(name, FilePicker.Load(registry, element));
                         break;
                 }
             }
@@ -216,12 +216,10 @@ namespace OTK.UI.Utility
         /// <param name="name">The unique name of the element.</param>
         /// <param name="element">The element instance to register.</param>
         /// <exception cref="ArgumentException">Thrown if the name is empty or already registered.</exception>
-        protected void Register(string name, IUIElement element)
+        protected void Store(string name, IUIElement element)
         {
-            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
             if (string.IsNullOrEmpty(name)) throw new ArgumentException($"Every element must have an identifier");
             list.Add(element);
-            registry.Add(name, element);
         }
 
         /// <summary>

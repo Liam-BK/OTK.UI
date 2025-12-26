@@ -1,6 +1,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 using System.Globalization;
@@ -87,7 +88,7 @@ namespace OTK.UI.Components
         /// Thrown when the breadcrumb is missing required fields (such as a name or bounds)
         /// or when numeric values cannot be parsed.
         /// </exception>
-        public static new BreadCrumb Load(XElement element)
+        public static new BreadCrumb Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -128,6 +129,8 @@ namespace OTK.UI.Components
             }
             else breadcrumb.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, breadcrumb);
             return breadcrumb;
         }
 

@@ -2,6 +2,7 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 using System.Globalization;
@@ -83,7 +84,7 @@ namespace OTK.UI.Components
         /// <exception cref="FormatException">
         /// Thrown if the element is missing required fields or the Text field is not numeric.
         /// </exception>
-        public static new NumericSpinner Load(XElement element)
+        public static new NumericSpinner Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -136,6 +137,8 @@ namespace OTK.UI.Components
             }
             else numericSpinner.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, numericSpinner);
             return numericSpinner;
         }
 

@@ -1,6 +1,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 using System.Globalization;
@@ -138,7 +139,7 @@ namespace OTK.UI.Components
         /// </summary>
         /// <param name="element">The <see cref="XElement"/> containing checkbox properties.</param>
         /// <returns>A new <see cref="CheckBox"/> instance configured from the XML.</returns>
-        public static new CheckBox Load(XElement element)
+        public static new CheckBox Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -182,6 +183,8 @@ namespace OTK.UI.Components
             }
             else checkbox.CheckedTexture = checkedTexture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, checkbox);
             return checkbox;
         }
 

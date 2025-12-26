@@ -1,4 +1,5 @@
 using OpenTK.Mathematics;
+using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
 using System.Globalization;
@@ -32,7 +33,7 @@ namespace OTK.UI.Components
         /// </summary>
         /// <param name="element">The XML element containing label configuration.</param>
         /// <returns>A fully initialized <see cref="Image"/> instance.</returns>
-        public static Image Load(XElement element)
+        public static Image Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -63,6 +64,8 @@ namespace OTK.UI.Components
             }
             else image.Texture = texture;
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, image);
             return image;
         }
     }

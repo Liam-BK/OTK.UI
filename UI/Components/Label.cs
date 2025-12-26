@@ -4,6 +4,7 @@ using OTK.UI.Utility;
 using OTK.UI.Managers;
 using System.Xml.Linq;
 using System.Globalization;
+using OTK.UI.Interfaces;
 
 namespace OTK.UI.Components
 {
@@ -193,7 +194,7 @@ namespace OTK.UI.Components
         /// </summary>
         /// <param name="element">The XML element containing label configuration.</param>
         /// <returns>A fully initialized <see cref="Label"/> instance.</returns>
-        public static Label Load(XElement element)
+        public static Label Load(Dictionary<string, IUIElement> registry, XElement element)
         {
             var name = element.Element("Name")?.Value.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(name)) throw new FormatException("All elements must have a unique name");
@@ -229,6 +230,8 @@ namespace OTK.UI.Components
                     break;
             }
 
+            if (registry.ContainsKey(name)) throw new ArgumentException($"An element with name: {name} has already been registered.");
+            registry.Add(name, label);
             return label;
         }
 
