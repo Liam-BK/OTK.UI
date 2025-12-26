@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
 
     <PackageID>OTK.UI</PackageID>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>Liam Burr-Kight</Authors>
     <Product>OTK.UI</Product>
     <Description>A low-friction UI library for OpenTK with XML layouts and LineDSL integration.</Description>
