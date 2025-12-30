@@ -329,7 +329,7 @@ namespace OTK.UI.Containers
             for (int i = 0; i < tabElements.Count; i++)
             {
                 var tabElement = tabElements[i];
-                var layoutElement = tabElement.Element("ConstraintLayout") ?? tabElement.Element("VerticalLayout");
+                var layoutElement = tabElement.Element("ConstraintLayout") ?? tabElement.Element("VerticalLayout") ?? tabElement.Element("HorizontalLayout") ?? tabElement.Element("FlowLayout");
                 Console.WriteLine($"layout element: {layoutElement?.Name.LocalName}");
 
                 tabbedPanel.CurrentTab = i;
