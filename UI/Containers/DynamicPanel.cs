@@ -106,7 +106,7 @@ namespace OTK.UI.Containers
             var scrollbarThumbColor = element.Element("ScrollBarThumbColor")?.Value.Trim() ?? "1, 1, 1";
             var scrollbarWidth = float.Parse(element.Element("ScrollBarWidth")?.Value ?? "10", CultureInfo.InvariantCulture);
             var anchor = element.Element("Anchor")?.Value.ToLower() ?? "none";
-            var layoutElement = element.Element("ConstraintLayout") ?? element.Element("VerticalLayout");
+            var layoutElement = element.Element("ConstraintLayout") ?? element.Element("VerticalLayout") ?? element.Element("HorizontalLayout") ?? element.Element("FlowLayout");
 
             var left = float.Parse(bounds?.Element("Left")?.Value ?? "0", CultureInfo.InvariantCulture);
             var bottom = float.Parse(bounds?.Element("Bottom")?.Value ?? "0", CultureInfo.InvariantCulture);
