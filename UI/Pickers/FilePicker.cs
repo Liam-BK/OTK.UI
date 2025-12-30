@@ -118,7 +118,7 @@ namespace OTK.UI.Pickers
             Add(searchbar);
             quickAccess = new Panel(new Vector4(), scrollBarWidth, inset, uvInset, Colour);
             var quickAccessLayout = new VerticalLayout();
-            quickAccessLayout.Size = 25f;
+            quickAccessLayout.ElementHeight = 25f;
             quickAccessLayout.Spacing = 0f;
             quickAccess.ApplicableLayout = quickAccessLayout;
             var desktop = FileReference.SetUpFileRef(FileReference.Directories.Desktop);
@@ -140,7 +140,7 @@ namespace OTK.UI.Pickers
             Add(confirm);
             currentFolder = new Panel(new Vector4(), scrollBarWidth, inset, uvInset, Colour);
             var currentFolderLayout = new VerticalLayout();
-            currentFolderLayout.Size = 25f;
+            currentFolderLayout.ElementHeight = 25f;
             currentFolderLayout.Spacing = 0f;
             currentFolder.ApplicableLayout = currentFolderLayout;
             Add(currentFolder);

@@ -29,9 +29,9 @@ namespace OTK.UI.Layouts
         public static new VerticalLayout Load(XElement element)
         {
             var layout = new VerticalLayout();
-            var size = float.Parse(element.Element("Size")?.Value ?? "20");
+            var size = float.Parse(element.Element("ElementHeight")?.Value ?? "20");
             var spacing = float.Parse(element.Element("Spacing")?.Value ?? "0");
-            layout.Size = size;
+            layout.ElementHeight = size;
             layout.Spacing = spacing;
             return layout;
         }
@@ -55,8 +55,8 @@ namespace OTK.UI.Layouts
                 var start = panel.Bounds.W - panel.TitleMargin - panel.ContentMargin;
                 foreach (var element in panel.Elements)
                 {
-                    element.Bounds = new Vector4(left, start - Size, right, start);
-                    start -= Size + Spacing;
+                    element.Bounds = new Vector4(left, start - ElementHeight, right, start);
+                    start -= ElementHeight + Spacing;
                 }
             }
             else if (Parent is TabbedPanel tabbedPanel)
@@ -66,8 +66,8 @@ namespace OTK.UI.Layouts
                 var start = tabbedPanel.Bounds.W - tabbedPanel.TabHeight - tabbedPanel.ContentMargin;
                 foreach (var element in tabbedPanel.TabElements[tabbedPanel.CurrentTab])
                 {
-                    element.Bounds = new Vector4(left, start - Size, right, start);
-                    start -= Size + Spacing;
+                    element.Bounds = new Vector4(left, start - ElementHeight, right, start);
+                    start -= ElementHeight + Spacing;
                 }
             }
         }

@@ -34,7 +34,17 @@ namespace OTK.UI.Layouts
         /// A general-purpose scaling factor used by certain layout types.
         /// The meaning of this value is layout-specific (e.g. proportional sizing).
         /// </summary>
-        public float Size
+        public float ElementHeight
+        {
+            get;
+            set;
+        } = 1.0f;
+
+        /// <summary>
+        /// A general-purpose scaling factor used by certain layout types.
+        /// The meaning of this value is layout-specific (e.g. proportional sizing).
+        /// </summary>
+        public float ElementWidth
         {
             get;
             set;
@@ -56,13 +66,14 @@ namespace OTK.UI.Layouts
         {
             // TODO: Add support for user-defined/custom layouts (reflection-based loader?)
             if (element == null) return null;
-
             switch (element.Name.LocalName)
             {
                 case "ConstraintLayout":
                     return ConstraintLayout.Load(element);
                 case "VerticalLayout":
                     return VerticalLayout.Load(element);
+                case "HorizontalLayout":
+                    return HorizontalLayout.Load(element);
                 default:
                     throw new FormatException($"Unknown layout type: {element.Name}");
             }
