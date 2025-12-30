@@ -702,6 +702,7 @@ namespace OTK.UI.Containers
             if (ScrollbarVisibilityType is ScrollbarVisibility.MouseOver && scrollbar.WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
                 scrollbar.IsVisible = true;
             OnUpdate(deltaTime, mouse);
+            ApplicableLayout?.UpdateButtonTextSize();
         }
 
         /// <summary>

@@ -65,6 +65,7 @@ namespace OTK.UI.Layouts
                 var right = tabbedPanel.scrollbar.Bounds.X - tabbedPanel.ContentMargin;
                 PositionElements(tabbedPanel.TabElements[tabbedPanel.CurrentTab], left, top, right);
             }
+            UpdateButtonTextSize();
         }
 
         private void PositionElements(List<IUIElement> elements, float left, float top, float right)

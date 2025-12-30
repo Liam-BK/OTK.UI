@@ -70,6 +70,7 @@ namespace OTK.UI.Layouts
                     start -= ElementHeight + Spacing;
                 }
             }
+            UpdateButtonTextSize();
         }
 
         /// <summary>

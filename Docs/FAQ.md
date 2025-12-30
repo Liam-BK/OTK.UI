@@ -44,7 +44,7 @@
 
 ### Why isn't my scroll bar affecting anything?
 
-- Scrollbars don't automatically control other elements. They output a value instead. It's up to your code to decide what to do with the provided value (e.g., to a scrollable panel’s offset).
+- Scrollbars on their own are just components that don't automatically control other elements. They output a value between 0-1 instead. It's up to your code to decide what to do with the provided value (e.g., to a scrollable panel’s offset).
 
 ### Why does my instantiated LayoutLoader say a referenced element can't be found?
 

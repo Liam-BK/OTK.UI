@@ -1,6 +1,9 @@
 using System.Xml.Linq;
 using OpenTK.Mathematics;
+using OTK.UI.Components;
+using OTK.UI.Containers;
 using OTK.UI.Interfaces;
+using OTK.UI.Utility;
 
 namespace OTK.UI.Layouts
 {
@@ -78,6 +81,62 @@ namespace OTK.UI.Layouts
                     return FlowLayout.Load(element);
                 default:
                     throw new FormatException($"Unknown layout type: {element.Name}");
+            }
+        }
+
+        protected float GetSmallestButtonTextSize()
+        {
+            var value = float.MaxValue;
+            bool containsButtons = false;
+            if (Parent is Panel panel)
+            {
+                if (panel.Elements.Count == 0) return 0;
+                foreach (var element in panel.Elements)
+                {
+                    if (element is Button button && button.label.Size < value)
+                    {
+                        value = button.label.Size;
+                        containsButtons = true;
+                    }
+                }
+                if (containsButtons) return value;
+            }
+            else if (Parent is TabbedPanel tabbedPanel)
+            {
+                if (tabbedPanel.TabElements[tabbedPanel.CurrentTab].Count == 0) return 0;
+                foreach (var element in tabbedPanel.TabElements[tabbedPanel.CurrentTab])
+                {
+                    if (element is Button button && button.label.Size < value)
+                    {
+                        value = button.label.Size;
+                        containsButtons = true;
+                    }
+                }
+                if (containsButtons) return value;
+            }
+            return 0;
+        }
+
+        public void UpdateButtonTextSize()
+        {
+            float textSize = GetSmallestButtonTextSize();
+            if (Parent is Panel panel) SetButtonTextSize(panel, textSize);
+            else if (Parent is TabbedPanel tabbedPanel) SetButtonTextSize(tabbedPanel, textSize);
+        }
+
+        private void SetButtonTextSize(Panel panel, float value)
+        {
+            foreach (var element in panel.Elements)
+            {
+                if (element is Button button) button.label.Size = value;
+            }
+        }
+
+        private void SetButtonTextSize(TabbedPanel panel, float value)
+        {
+            foreach (var element in panel.TabElements[panel.CurrentTab])
+            {
+                if (element is Button button) button.label.Size = value;
             }
         }
 

@@ -109,6 +109,10 @@
 
 - Tab: Represents a single tab inside a TabbedPanel. Contains its own layout rules and child UI elements.
 
+- ElementWidth: represents the width of all elements being modified by Horizontal or Flow layouts.
+
+- ElementHeight: represents the height of all elements being modified by all layout types except ConstraintLayout.
+
 # Component Examples
 
 ## BreadCrumb Example
@@ -442,16 +446,31 @@
         <IsVisible>True</IsVisible>
         <Anchor>Center</Anchor>
         <!-- Pick one Layout. If you have multiple Layouts the first one in the xml file will be used. -->
+        <!-- Constraint Layout -->
         <ConstraintLayout>
             <Constraint>element[0].left = panelleft + contentmargin</Constraint>
             <Constraint>element[0].top = paneltop - contentmargin - titlemargin</Constraint>
             <Constraint>element[0].right = scrollbarleft - contentmargin</Constraint>
             <Constraint>element[0].bottom = paneltop - contentmargin - titlemargin - 30</Constraint>
         </ConstraintLayout>
+        <!-- Vertical Layout. Also known as a Column Layout -->
         <VerticalLayout>
-            <Size>25</Size>
+            <ElementHeight>25</ElementHeight>
             <Spacing>15</Spacing>
         </VerticalLayout>
+        <!-- HorizontalLayout -->
+        <HorizontalLayout>
+            <ElementHeight>25</ElementHeight>
+            <ElementWidth>120</ElementWidth>
+            <Spacing>15</Spacing>
+        </HorizontalLayout>
+        <!-- Flow Layout -->
+        <FlowLayout>
+            <ElementHeight>25</ElementHeight>
+            <ElementWidth>75</ElementWidth>
+            <Spacing>15</Spacing>
+        </FlowLayout>
+        <!--  -->
         <TextField>
             <Name>TextField</Name>
             <Bounds>
@@ -491,16 +510,32 @@
         <ScrollBarThumbTexture>TestButton</ScrollBarThumbTexture>
         <IsVisible>True</IsVisible>
         <Anchor>Center</Anchor>
+        <!-- Pick one Layout. If you have multiple Layouts the first one in the xml file will be used. -->
+        <!-- Constraint Layout -->
         <ConstraintLayout>
             <Constraint>element[0].left = panelleft + contentmargin</Constraint>
             <Constraint>element[0].top = paneltop - contentmargin - titlemargin</Constraint>
             <Constraint>element[0].right = scrollbarleft - contentmargin</Constraint>
             <Constraint>element[0].bottom = paneltop - contentmargin - titlemargin - 30</Constraint>
         </ConstraintLayout>
+        <!-- Vertical Layout. Also known as a Column Layout -->
         <VerticalLayout>
             <Size>25</Size>
             <Spacing>15</Spacing>
         </VerticalLayout>
+        <!-- HorizontalLayout -->
+        <HorizontalLayout>
+            <ElementHeight>25</ElementHeight>
+            <ElementWidth>120</ElementWidth>
+            <Spacing>15</Spacing>
+        </HorizontalLayout>
+        <!-- Flow Layout -->
+        <FlowLayout>
+            <ElementHeight>25</ElementHeight>
+            <ElementWidth>75</ElementWidth>
+            <Spacing>15</Spacing>
+        </FlowLayout>
+        <!--  -->
         <TextField>
             <Name>TextField</Name>
             <Bounds>
@@ -543,13 +578,32 @@
 
         <Tab>
             <Text>Click</Text>
+            <!-- Pick one Layout. If you have multiple Layouts the first one in the xml file will be used. -->
+            <!-- Constraint Layout -->
             <ConstraintLayout>
                 <Constraint>element[0].left = panelleft + contentmargin</Constraint>
-                <Constraint>element[0].top = paneltop - contentmargin</Constraint>
+                <Constraint>element[0].top = paneltop - contentmargin - titlemargin</Constraint>
                 <Constraint>element[0].right = scrollbarleft - contentmargin</Constraint>
-                <Constraint>element[0].bottom = paneltop - contentmargin - 30</Constraint>
+                <Constraint>element[0].bottom = paneltop - contentmargin - titlemargin - 30</Constraint>
             </ConstraintLayout>
-
+            <!-- Vertical Layout. Also known as a Column Layout -->
+            <VerticalLayout>
+                <Size>25</Size>
+                <Spacing>15</Spacing>
+            </VerticalLayout>
+            <!-- HorizontalLayout -->
+            <HorizontalLayout>
+                <ElementHeight>25</ElementHeight>
+                <ElementWidth>120</ElementWidth>
+                <Spacing>15</Spacing>
+            </HorizontalLayout>
+            <!-- Flow Layout -->
+            <FlowLayout>
+                <ElementHeight>25</ElementHeight>
+                <ElementWidth>75</ElementWidth>
+                <Spacing>15</Spacing>
+            </FlowLayout>
+            <!--  -->
             <Button>
                 <Name>A Button</Name>
                 <Bounds>
@@ -571,10 +625,32 @@
 
         <Tab>
             <Text>Type</Text>
+            <!-- Pick one Layout. If you have multiple Layouts the first one in the xml file will be used. -->
+            <!-- Constraint Layout -->
+            <ConstraintLayout>
+                <Constraint>element[0].left = panelleft + contentmargin</Constraint>
+                <Constraint>element[0].top = paneltop - contentmargin - titlemargin</Constraint>
+                <Constraint>element[0].right = scrollbarleft - contentmargin</Constraint>
+                <Constraint>element[0].bottom = paneltop - contentmargin - titlemargin - 30</Constraint>
+            </ConstraintLayout>
+            <!-- Vertical Layout. Also known as a Column Layout -->
             <VerticalLayout>
                 <Size>25</Size>
                 <Spacing>15</Spacing>
             </VerticalLayout>
+            <!-- HorizontalLayout -->
+            <HorizontalLayout>
+                <ElementHeight>25</ElementHeight>
+                <ElementWidth>120</ElementWidth>
+                <Spacing>15</Spacing>
+            </HorizontalLayout>
+            <!-- Flow Layout -->
+            <FlowLayout>
+                <ElementHeight>25</ElementHeight>
+                <ElementWidth>75</ElementWidth>
+                <Spacing>15</Spacing>
+            </FlowLayout>
+            <!--  -->
             <TextField>
                 <Name>TextField1</Name>
                 <Bounds>

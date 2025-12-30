@@ -95,6 +95,10 @@ namespace OTK.UI.Components
                 if (label is not null)
                 {
                     label.Size = Height * 0.5f;
+                    var textBounds = label.CalculateBounds();
+                    var textWidth = Math.Max(textBounds.Z - textBounds.X, 0);
+                    var proportion = (value.Z - value.X) / textWidth;
+                    if (proportion < 1) label.Size *= proportion;
                     label.Origin = Center - Vector2.UnitY * Height * 0.25f;
                 }
             }
@@ -228,6 +232,11 @@ namespace OTK.UI.Components
             if (label is not null)
             {
                 label.Size = Math.Abs(_bounds.W - _bounds.Y) * 0.5f;
+                var textBounds = label.CalculateBounds();
+                float margin = 4;
+                var textWidth = Math.Max(textBounds.Z - textBounds.X, 0);
+                var proportion = Math.Max(Bounds.Z - Bounds.X - margin, 0) / textWidth;
+                if (proportion < 1) label.Size *= proportion;
                 label.Origin = new Vector2((_bounds.X + _bounds.Z) * 0.5f, (_bounds.Y + _bounds.W) * 0.5f - label.Size * 0.5f);
             }
         }

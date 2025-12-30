@@ -58,6 +58,7 @@ namespace OTK.UI.Layouts
                     Console.WriteLine($"{E.Message} constraint: {constraint}");
                 }
             }
+            UpdateButtonTextSize();
         }
     }
 }

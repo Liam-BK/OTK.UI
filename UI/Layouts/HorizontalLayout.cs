@@ -69,6 +69,7 @@ namespace OTK.UI.Layouts
 
                 if (squish) ApplySquish();
             }
+            UpdateButtonTextSize();
         }
 
         private void ApplySquish()
