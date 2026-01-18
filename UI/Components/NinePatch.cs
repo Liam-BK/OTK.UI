@@ -243,24 +243,27 @@ namespace OTK.UI.Components
         /// Applies the configured shader, passes uniform data, binds buffers,
         /// and draws all nine segments as triangles.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            GL.Enable(EnableCap.ScissorTest);
-            var clipBounds = FindMinClipBounds();
-            var clipWidth = clipBounds.Z - clipBounds.X;
-            var clipHeight = clipBounds.W - clipBounds.Y;
-            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            if (!ShareClipping)
+            {
+                var clipBounds = FindMinClipBounds();
+                var clipWidth = clipBounds.Z - clipBounds.X;
+                var clipHeight = clipBounds.W - clipBounds.Y;
+                GL.Enable(EnableCap.ScissorTest);
+                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            }
             GL.UseProgram(program);
             PassUniform();
             GL.BindVertexArray(vao);
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
-            GL.Disable(EnableCap.ScissorTest);
+            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

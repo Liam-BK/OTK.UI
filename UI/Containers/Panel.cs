@@ -890,16 +890,16 @@ namespace OTK.UI.Containers
         /// Uses OpenGL scissor testing to clip child elements within the panel's content bounds, excluding margins and title area.  
         /// Scroll offset is applied to child element rendering according to the scrollbar's <see cref="ScrollBar.ThumbPosition"/>.
         /// </remarks>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw();
-            scrollbar.Draw();
-            _title.Draw();
+            base.Draw(ShareClipping);
+            scrollbar.Draw(ShareClipping);
+            _title.Draw(ShareClipping);
             GL.Enable(EnableCap.ScissorTest);
             var clipBounds = FindMinClipBounds();
             var clipWidth = clipBounds.Z - clipBounds.X;
@@ -908,9 +908,9 @@ namespace OTK.UI.Containers
             GL.Scissor((int)Math.Round(clipBounds.X + _contentMargin), (int)Math.Round(clipBounds.Y + _contentMargin), (int)Math.Round(clipWidth - scrollbar.Width - _contentMargin), (int)Math.Round(clipContentHeight));
             for (int i = Elements.Count - 1; i >= 0; i--)
             {
-                Elements[i].Draw();
+                Elements[i].Draw(ShareClipping);
             }
-            GL.Disable(EnableCap.ScissorTest);
+            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

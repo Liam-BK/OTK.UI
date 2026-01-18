@@ -24,6 +24,7 @@ namespace OTK.UI.Managers
 
     public static class FontManager
     {
+        private const float INF = 1e20f;
         internal static Dictionary<string, FontData> Fonts = new();
 
         /// <summary>
@@ -128,6 +129,107 @@ namespace OTK.UI.Managers
                 Pixels = pixels,
                 Channels = 4
             };
+        }
+
+        public static ImageData ConvertToSDF(ImageData data)
+        {
+            int w = data.Width;
+            int h = data.Height;
+            int channels = data.Channels;
+            int alpha = channels - 1;
+
+            float[,] grid = new float[w, h];
+            float[,] dist = new float[w, h];
+
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                {
+                    int idx = (y * w + x) * channels + alpha;
+                    grid[x, y] = data.Pixels[idx] > 128 ? 0.0f : INF;
+                }
+
+            float[] f = new float[Math.Max(w, h)];
+            float[] d = new float[Math.Max(w, h)];
+
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++) f[y] = grid[x, y];
+                DistanceTransform1D(f, h, d);
+                for (int y = 0; y < h; y++) dist[x, y] = d[y];
+            }
+
+            float maxDist = 0f;
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++) f[x] = dist[x, y];
+                DistanceTransform1D(f, w, d);
+
+                for (int x = 0; x < w; x++)
+                {
+                    float value = MathF.Sqrt(d[x]);
+                    bool inside = grid[x, y] == 0f;
+                    value = inside ? -value : value;
+                    dist[x, y] = value;
+                    maxDist = MathF.Max(maxDist, MathF.Abs(value));
+                }
+            }
+
+            byte[] outPixels = new byte[w * h * channels];
+            for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
+                {
+                    float n = 0.5f + dist[x, y] / (2f * maxDist);
+                    byte b = (byte)(Math.Clamp(n, 0f, 1f) * 255f);
+
+                    int idx = (y * w + x) * channels;
+                    for (int c = 0; c < channels; c++)
+                        outPixels[idx + c] = b;
+                }
+
+
+            return new ImageData
+            {
+                Width = w,
+                Height = h,
+                Channels = channels,
+                Pixels = outPixels
+            };
+        }
+
+        static void DistanceTransform1D(float[] f, int n, float[] d)
+        {
+            int[] v = new int[n];
+            float[] z = new float[n + 1];
+
+            int k = 0;
+            v[0] = 0;
+            z[0] = -INF;
+            z[1] = INF;
+
+            for (int q = 1; q < n; q++)
+            {
+                float s;
+                do
+                {
+                    int vk = v[k];
+                    s = ((f[q] + q * q) - (f[vk] + vk * vk)) / (2f * (q - vk));
+                    if (s <= z[k]) k--;
+                }
+                while (s <= z[k]);
+
+                k++;
+                v[k] = q;
+                z[k] = s;
+                z[k + 1] = INF;
+            }
+
+            k = 0;
+            for (int q = 0; q < n; q++)
+            {
+                while (z[k + 1] < q) k++;
+                float dx = q - v[k];
+                d[q] = dx * dx + f[v[k]];
+            }
         }
 
         private static Dictionary<(char, char), float> GenerateKerningTable(string filePath, char firstChar, char lastChar)

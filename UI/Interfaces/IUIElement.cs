@@ -169,6 +169,6 @@ namespace OTK.UI.Interfaces
         /// <summary>
         /// Renders the element on screen.
         /// </summary>
-        public void Draw();
+        public void Draw(bool ShareClipping = false);
     }
 }

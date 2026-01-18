@@ -1,6 +1,7 @@
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OTK.UI.Interfaces;
 using OTK.UI.Managers;
@@ -34,7 +35,7 @@ namespace OTK.UI.Components
         /// </summary>
         public Button decrement;
 
-        private float buttonWidth;
+        public float buttonWidth;
 
         /// <summary>
         /// Gets or sets the texture for both increment and decrement buttons.
@@ -147,9 +148,15 @@ namespace OTK.UI.Components
         /// </summary>
         public override void UpdateBounds()
         {
-            base.UpdateBounds();
-            if (increment is not null) increment.Bounds = new Vector4(Bounds.Z, Center.Y, Bounds.Z + buttonWidth, Bounds.W);
-            if (decrement is not null) decrement.Bounds = new Vector4(Bounds.Z, Bounds.Y, Bounds.Z + buttonWidth, Center.Y);
+            Vector2 center = new Vector2((_bounds.X + _bounds.Z) * 0.5f - buttonWidth * 0.5f, (_bounds.Y + _bounds.W) * 0.5f);
+            model = Matrix4.CreateScale(Width - buttonWidth, Height, 1) * (Window is not null ? Matrix4.CreateTranslation(center.X - Window.Size.X * InvDPIScaleX * 0.5f, center.Y - Window.Size.Y * InvDPIScaleY * 0.5f, 0) : Matrix4.Identity);
+            if (text is not null)
+            {
+                text.Size = Math.Abs(_bounds.W - _bounds.Y) * 0.5f;
+                text.Origin = new Vector2(Bounds.X + Inset * 0.25f + textOffset, Center.Y - text.Size * 0.5f);
+            }
+            if (increment is not null) increment.Bounds = new Vector4(Bounds.Z - buttonWidth, Center.Y, Bounds.Z, Bounds.W);
+            if (decrement is not null) decrement.Bounds = new Vector4(Bounds.Z - buttonWidth, Bounds.Y, Bounds.Z, Center.Y);
         }
 
         /// <summary>
@@ -158,7 +165,7 @@ namespace OTK.UI.Components
         /// <param name="value">The new right-side X coordinate.</param>
         public override void PreEditRight(float value)
         {
-            _bounds.Z = value - buttonWidth;
+            _bounds.Z = value;
             if (increment is not null)
             {
                 increment.PreEditLeft(value - buttonWidth);
@@ -180,6 +187,36 @@ namespace OTK.UI.Components
             char c = e.AsString[0];
             if ((c >= '0' && c <= '9') || c == '.' || c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '(' || c == ')')
                 base.OnTextInput(e);
+        }
+
+        /// <summary>
+        /// Handles mouse movement. Updates text selection when dragging and changes cursor to I-beam when hovering.
+        /// </summary>
+        /// <param name="mouse">The current mouse state.</param>
+        public override void OnMouseMove(MouseState mouse)
+        {
+            if (Window is not null)
+            {
+                if (WithinBounds(ConvertMouseScreenCoords(mouse.Position)) && !increment.WithinBounds(ConvertMouseScreenCoords(mouse.Position)) && !decrement.WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
+                {
+                    Window.Cursor = MouseCursor.IBeam;
+                }
+            }
+            if (ClickInBounds)
+            {
+                if (ConvertMouseScreenCoords(mouse.Position).X > InitialClickPosition)
+                {
+                    LeftSelectIndex = text.FindIndexFromPos(new Vector2(InitialClickPosition, Center.Y));
+                    RightSelectIndex = text.FindIndexFromPos(ConvertMouseScreenCoords(mouse.Position));
+                    CaretIndex = RightSelectIndex;
+                }
+                else if (ConvertMouseScreenCoords(mouse.Position).X < InitialClickPosition)
+                {
+                    RightSelectIndex = text.FindIndexFromPos(new Vector2(InitialClickPosition, Center.Y));
+                    LeftSelectIndex = text.FindIndexFromPos(ConvertMouseScreenCoords(mouse.Position));
+                    CaretIndex = LeftSelectIndex;
+                }
+            }
         }
 
         /// <summary>
@@ -285,16 +322,25 @@ namespace OTK.UI.Components
         /// <summary>
         /// Draws the text field and the increment/decrement buttons.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw();
-            increment.Draw();
-            decrement.Draw();
+            base.Draw(ShareClipping);
+            if (Parent is not null && !ShareClipping)
+            {
+                var clipBounds = FindMinClipBounds();
+                var clipWidth = clipBounds.Z - clipBounds.X;
+                var clipHeight = clipBounds.W - clipBounds.Y;
+                GL.Enable(EnableCap.ScissorTest);
+                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            }
+            increment.Draw(true);
+            decrement.Draw(true);
+            GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

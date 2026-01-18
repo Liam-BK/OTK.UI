@@ -168,7 +168,8 @@ namespace OTK.UI.Containers
                         dynamicPanel.Add(ninePatch);
                         break;
                     case "numericspinner":
-                        var numericspinner = NumericSpinner.Load(registry, child);
+                        var numericSpinner = NumericSpinner.Load(registry, child);
+                        dynamicPanel.Add(numericSpinner);
                         break;
                     case "progressbar":
                         var progressbar = ProgressBar.Load(registry, child);

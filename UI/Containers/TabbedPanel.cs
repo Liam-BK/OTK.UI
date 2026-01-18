@@ -866,19 +866,19 @@ namespace OTK.UI.Containers
         /// Draws the panel, tabs, scrollbar, and all elements in the current tab.
         /// Applies scissor clipping to prevent drawing outside the content area.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw();
+            base.Draw(ShareClipping);
             foreach (var tab in Tabs)
             {
-                tab.Draw();
+                tab.Draw(ShareClipping);
             }
-            scrollbar.Draw();
+            scrollbar.Draw(ShareClipping);
             GL.Enable(EnableCap.ScissorTest);
             var clipBounds = FindMinClipBounds();
             var clipWidth = clipBounds.Z - clipBounds.X;
@@ -887,9 +887,9 @@ namespace OTK.UI.Containers
             GL.Scissor((int)Math.Round(clipBounds.X + _contentMargin), (int)Math.Round(clipBounds.Y + _contentMargin), (int)Math.Round(clipWidth - scrollbar.Width - _contentMargin), (int)Math.Round(clipContentHeight));
             for (int i = TabElements[CurrentTab].Count - 1; i >= 0; i--)
             {
-                TabElements[CurrentTab][i].Draw();
+                TabElements[CurrentTab][i].Draw(ShareClipping);
             }
-            GL.Disable(EnableCap.ScissorTest);
+            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

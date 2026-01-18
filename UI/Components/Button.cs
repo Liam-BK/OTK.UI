@@ -416,7 +416,7 @@ namespace OTK.UI.Components
         /// A scissor region is applied using <see cref="FindMinClipBounds"/> to prevent drawing
         /// outside parent clipping areas.
         /// </remarks>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
@@ -425,15 +425,18 @@ namespace OTK.UI.Components
             GL.Enable(EnableCap.Blend);
             GL.UseProgram(program);
             PassUniform();
-            var clipBounds = FindMinClipBounds();
-            var clipWidth = clipBounds.Z - clipBounds.X;
-            var clipHeight = clipBounds.W - clipBounds.Y;
-            GL.Enable(EnableCap.ScissorTest);
-            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            if (!ShareClipping)
+            {
+                var clipBounds = FindMinClipBounds();
+                var clipWidth = clipBounds.Z - clipBounds.X;
+                var clipHeight = clipBounds.W - clipBounds.Y;
+                GL.Enable(EnableCap.ScissorTest);
+                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            }
             GL.BindVertexArray(vao);
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
-            label.Draw();
-            GL.Disable(EnableCap.ScissorTest);
+            label.Draw(ShareClipping);
+            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
             GL.BindVertexArray(0);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);

@@ -588,7 +588,7 @@ namespace OTK.UI.Components
         /// <summary>
         /// Draws the Label element on the screen if IsVisible is true.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
@@ -598,7 +598,7 @@ namespace OTK.UI.Components
             GL.UseProgram(program);
             PassUniform();
             GL.BindVertexArray(vao);
-            if (Parent is not null)
+            if (Parent is not null && !ShareClipping)
             {
                 var clipBounds = FindMinClipBounds();
                 var clipWidth = clipBounds.Z - clipBounds.X;
@@ -608,7 +608,7 @@ namespace OTK.UI.Components
             }
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
-            GL.Disable(EnableCap.ScissorTest);
+            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

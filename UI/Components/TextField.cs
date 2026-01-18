@@ -43,7 +43,7 @@ namespace OTK.UI.Components
             set;
         } = false;
 
-        private bool ClickInBounds
+        protected bool ClickInBounds
         {
             get;
             set;
@@ -631,21 +631,24 @@ namespace OTK.UI.Components
         /// Draws the text field, including the background nine-patch and the text label.
         /// Applies clipping based on the text field's bounds.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw();
-            var clipBounds = FindMinClipBounds();
-            var clipWidth = clipBounds.Z - clipBounds.X;
-            var clipHeight = clipBounds.W - clipBounds.Y;
-            GL.Enable(EnableCap.ScissorTest);
-            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
-            text.Draw();
-            GL.Disable(EnableCap.ScissorTest);
+            base.Draw(ShareClipping);
+            if (Parent is not null && !ShareClipping)
+            {
+                var clipBounds = FindMinClipBounds();
+                var clipWidth = clipBounds.Z - clipBounds.X;
+                var clipHeight = clipBounds.W - clipBounds.Y;
+                GL.Enable(EnableCap.ScissorTest);
+                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+                text.Draw(ShareClipping);
+            }
+            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

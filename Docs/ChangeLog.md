@@ -13,3 +13,11 @@
 - Fixed issue where button text would not be fully displayed under certain, easy-to-achieve conditions. Button text size will now also be shared among all instances within a layout.
 
 - Updated XML Layout Example documents to include changes from patch 1.1.0. This should make it less confusing for newcomers using the XML schema.
+
+# Patch 1.1.3
+
+- Fixed formatting issues when using numericSpinner where it would be wider than other elements in having the same format applied.
+
+- Fixed issue where calling the Load method of the DynamicPanel and providing a file with a NumericSpinner inside the DynamicPanel would cause the NumericSpinner to not show up inside the DynamicPanel.
+
+- Fixed issue where NumericSpinner buttons were not clipped properly inside Panels.

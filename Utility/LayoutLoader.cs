@@ -68,6 +68,23 @@ namespace OTK.UI.Utility
         /// <remarks>Does not count nested UI elements in the final value.</remarks>
         public int Count => list.Count;
 
+        private bool _isVisible = true;
+        public bool IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                foreach (var element in list)
+                {
+                    if (element is UIBase baseElement) baseElement.IsVisible = _isVisible;
+                }
+            }
+        }
+
         /// <summary>
         /// Loads UI elements from an XML file immediately upon construction.
         /// </summary>

@@ -74,15 +74,15 @@ namespace OTK.UI.Utility
             PassUniform(Vector3.Lerp(Colour, _rolloverColour, rolloverValue) * (Pressed ? 0.5f : 1.0f), "colour");
         }
 
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw();
-            _title.Draw();
+            base.Draw(ShareClipping);
+            _title.Draw(ShareClipping);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

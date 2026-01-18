@@ -158,7 +158,7 @@ namespace OTK.UI.Components
         /// <summary>
         /// Draws the progress bar to the screen if it is visible.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);

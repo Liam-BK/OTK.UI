@@ -276,16 +276,16 @@ namespace OTK.UI.Components
         /// Draws the scrollbar track and thumb to the screen.
         /// The thumb color is slightly dimmed while being dragged.
         /// </summary>
-        public override void Draw()
+        public override void Draw(bool ShareClipping = false)
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw();
+            base.Draw(ShareClipping);
             thumb.Colour = ThumbColour * (IsActive ? 0.5f : 1.0f);
-            thumb.Draw();
+            thumb.Draw(ShareClipping);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);
