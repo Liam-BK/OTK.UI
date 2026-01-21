@@ -79,6 +79,8 @@ namespace OTK.UI.Layouts
                     return HorizontalLayout.Load(element);
                 case "FlowLayout":
                     return FlowLayout.Load(element);
+                case "GridLayout":
+                    return GridLayout.Load(element);
                 default:
                     throw new FormatException($"Unknown layout type: {element.Name}");
             }

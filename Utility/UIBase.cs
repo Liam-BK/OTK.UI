@@ -585,6 +585,21 @@ namespace OTK.UI.Utility
             return position.X > Bounds.X && position.X <= Bounds.Z && position.Y > Bounds.Y && position.Y <= Bounds.W;
         }
 
+        /// <summary>
+        /// Determines whether the specified position lies inside this element's clipped bounding rectangle.
+        /// </summary>
+        /// <param name="position">The position to test, in this element’s local coordinate space.</param>
+        /// <returns><c>true</c> if the position is inside the bounds; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// If you're checking a mouse position, be sure to convert it first using <see cref="ConvertMouseScreenCoords"/>,
+        /// otherwise the test will be inaccurate.
+        /// </remarks>
+        public bool WithinMinClipBounds(Vector2 position)
+        {
+            var bounds = FindMinClipBounds() * InvDPIScaleVec4;
+            return position.X > bounds.X && position.X <= bounds.Z && position.Y > bounds.Y && position.Y <= bounds.W;
+        }
+
         private bool VisibleInParent()
         {
             if (Parent is not null) return !(Bounds.X > Parent.Bounds.Z || Bounds.Z < Parent.Bounds.X || Bounds.Y > Parent.Bounds.W || Bounds.W < Parent.Bounds.Y);
@@ -753,27 +768,24 @@ namespace OTK.UI.Utility
         /// Draws the element using the current shader, vertex data, and clip region.
         /// Respects visibility, DPI scaling, and parent clipping.
         /// </summary>
-        public virtual void Draw(bool ShareClipping = false)
+        public virtual void Draw()
         {
             if (!IsVisible || WindowClosing) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            if (Parent is not null && !ShareClipping)
-            {
-                GL.Enable(EnableCap.ScissorTest);
-                var clipBounds = FindMinClipBounds();
-                var clipWidth = clipBounds.Z - clipBounds.X;
-                var clipHeight = clipBounds.W - clipBounds.Y;
-                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
-            }
+            GL.Enable(EnableCap.ScissorTest);
+            var clipBounds = FindMinClipBounds();
+            var clipWidth = clipBounds.Z - clipBounds.X;
+            var clipHeight = clipBounds.W - clipBounds.Y;
+            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
             GL.UseProgram(program);
             PassUniform();
             GL.BindVertexArray(vao);
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
-            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
+            GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

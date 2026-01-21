@@ -124,6 +124,21 @@ namespace OTK.UI.Components
         /// </summary>
         public event Func<MouseButton, Task>? ReleasedAsync;
 
+        private IUIContainer? _parent = null;
+
+        public override IUIContainer? Parent
+        {
+            get
+            {
+                return _parent;
+            }
+            set
+            {
+                _parent = value;
+                label.Parent = value;
+            }
+        }
+
         private static int defaultProgram = 0;
 
         /// <summary>
@@ -254,21 +269,19 @@ namespace OTK.UI.Components
         {
             if (!IsVisible) return;
             base.OnUpdate(deltaTime);
-            if (TimeToRollover == 0)
+            var clipBounds = FindMinClipBounds() * InvDPIScaleVec4;
+            var convertedMouse = ConvertMouseScreenCoords(mouse.Position);
+            if (convertedMouse.X > clipBounds.X && convertedMouse.X < clipBounds.Z && convertedMouse.Y > clipBounds.Y && convertedMouse.Y < clipBounds.W)
             {
-                rolloverValue = WithinBounds(ConvertMouseScreenCoords(mouse.Position)) ? 1f : 0f;
+                if (TimeToRollover == 0) rolloverValue = WithinBounds(convertedMouse) ? 1f : 0f;
+                else rolloverValue += deltaTime / TimeToRollover * (WithinBounds(convertedMouse) ? 1 : -1);
             }
             else
             {
-                if (WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
-                {
-                    rolloverValue += deltaTime / TimeToRollover;
-                }
-                else
-                {
-                    rolloverValue -= deltaTime / TimeToRollover;
-                }
+                if (TimeToRollover == 0) rolloverValue = 0;
+                else rolloverValue -= deltaTime / TimeToRollover;
             }
+
             rolloverValue = Math.Clamp(rolloverValue, 0.0f, 1.0f);
         }
 
@@ -416,7 +429,7 @@ namespace OTK.UI.Components
         /// A scissor region is applied using <see cref="FindMinClipBounds"/> to prevent drawing
         /// outside parent clipping areas.
         /// </remarks>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
@@ -425,18 +438,15 @@ namespace OTK.UI.Components
             GL.Enable(EnableCap.Blend);
             GL.UseProgram(program);
             PassUniform();
-            if (!ShareClipping)
-            {
-                var clipBounds = FindMinClipBounds();
-                var clipWidth = clipBounds.Z - clipBounds.X;
-                var clipHeight = clipBounds.W - clipBounds.Y;
-                GL.Enable(EnableCap.ScissorTest);
-                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
-            }
+            var clipBounds = FindMinClipBounds();
+            var clipWidth = clipBounds.Z - clipBounds.X;
+            var clipHeight = clipBounds.W - clipBounds.Y;
+            GL.Enable(EnableCap.ScissorTest);
+            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
             GL.BindVertexArray(vao);
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
-            label.Draw(ShareClipping);
-            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
+            label.Draw();
+            GL.Disable(EnableCap.ScissorTest);
             GL.BindVertexArray(0);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);

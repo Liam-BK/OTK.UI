@@ -7,6 +7,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Containers;
 using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
@@ -113,6 +114,21 @@ namespace OTK.UI.Components
         public event Action<string>? OnTextEnter;
 
         private static int defaultProgram = 0;
+
+        private IUIContainer? _parent = null;
+
+        public override IUIContainer? Parent
+        {
+            get
+            {
+                return _parent;
+            }
+            set
+            {
+                _parent = value;
+                text.Parent = value;
+            }
+        }
 
         /// <summary>
         /// Creates a new <see cref="TextField"/> instance with specified bounds, inset, UV inset, and optional color.
@@ -259,13 +275,6 @@ namespace OTK.UI.Components
         public override void OnMouseMove(MouseState mouse)
         {
             base.OnMouseMove(mouse);
-            if (Window is not null)
-            {
-                if (WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
-                {
-                    Window.Cursor = MouseCursor.IBeam;
-                }
-            }
             if (ClickInBounds)
             {
                 if (ConvertMouseScreenCoords(mouse.Position).X > InitialClickPosition)
@@ -600,6 +609,13 @@ namespace OTK.UI.Components
         /// <param name="keyboard">Current keyboard state.</param>
         public override void OnUpdate(float deltaTime, MouseState mouse, KeyboardState keyboard)
         {
+            if (Window is not null)
+            {
+                if (WithinMinClipBounds(ConvertMouseScreenCoords(mouse.Position)))
+                {
+                    CursorManager.Request(MouseCursor.IBeam);
+                }
+            }
             OnUpdate(deltaTime);
             OnUpdate(deltaTime, mouse);
             OnUpdate(deltaTime, keyboard);
@@ -631,24 +647,21 @@ namespace OTK.UI.Components
         /// Draws the text field, including the background nine-patch and the text label.
         /// Applies clipping based on the text field's bounds.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw(ShareClipping);
-            if (Parent is not null && !ShareClipping)
-            {
-                var clipBounds = FindMinClipBounds();
-                var clipWidth = clipBounds.Z - clipBounds.X;
-                var clipHeight = clipBounds.W - clipBounds.Y;
-                GL.Enable(EnableCap.ScissorTest);
-                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
-                text.Draw(ShareClipping);
-            }
-            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
+            base.Draw();
+            var clipBounds = FindMinClipBounds();
+            var clipWidth = clipBounds.Z - clipBounds.X;
+            var clipHeight = clipBounds.W - clipBounds.Y;
+            GL.Enable(EnableCap.ScissorTest);
+            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            text.Draw();
+            GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

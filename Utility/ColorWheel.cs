@@ -81,14 +81,14 @@ namespace OTK.UI.Utility
         /// Draws the base image and any inherited visuals. The color wheel itself
         /// is rendered entirely via the fragment shader.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw(ShareClipping);
+            base.Draw();
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

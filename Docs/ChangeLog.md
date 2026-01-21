@@ -6,7 +6,7 @@
 
 # Patch 1.1.1
 
-- Fixed Issue where where new layout types would not work with DynamicPanel.
+- Fixed issue where new layout types would not work with DynamicPanel.
 
 # Patch 1.1.2
 
@@ -16,8 +16,14 @@
 
 # Patch 1.1.3
 
-- Fixed formatting issues when using numericSpinner where it would be wider than other elements in having the same format applied.
+- Fixed formatting issues when using NumericSpinner where it would be wider than other elements in having the same format applied.
 
 - Fixed issue where calling the Load method of the DynamicPanel and providing a file with a NumericSpinner inside the DynamicPanel would cause the NumericSpinner to not show up inside the DynamicPanel.
 
 - Fixed issue where NumericSpinner buttons were not clipped properly inside Panels.
+
+# Patch 1.2.0
+
+- Added GridLayout layout type.
+
+- Minor visual improvements to button interaction inside a Panel/TabbedPanel

@@ -318,7 +318,7 @@ namespace OTK.UI.Containers
             var scrollbarThumbColor = element.Element("ScrollBarThumbColor")?.Value.Trim() ?? "1, 1, 1";
             var scrollbarWidth = float.Parse(element.Element("ScrollBarWidth")?.Value ?? "10", CultureInfo.InvariantCulture);
             var anchor = element.Element("Anchor")?.Value.ToLower() ?? "none";
-            var layoutElement = element.Element("ConstraintLayout") ?? element.Element("VerticalLayout") ?? element.Element("HorizontalLayout") ?? element.Element("FlowLayout");
+            var layoutElement = element.Element("ConstraintLayout") ?? element.Element("VerticalLayout") ?? element.Element("HorizontalLayout") ?? element.Element("FlowLayout") ?? element.Element("GridLayout");
 
             var left = float.Parse(bounds?.Element("Left")?.Value ?? "0", CultureInfo.InvariantCulture);
             var bottom = float.Parse(bounds?.Element("Bottom")?.Value ?? "0", CultureInfo.InvariantCulture);
@@ -647,7 +647,7 @@ namespace OTK.UI.Containers
         public override void OnClickDown(MouseState mouse)
         {
             if (!IsVisible) return;
-            if (!WithinBounds(ConvertMouseScreenCoords(mouse.Position))) return;
+            if (!WithinBounds(ConvertMouseScreenCoords(mouse.Position)) || ConvertMouseScreenCoords(mouse.Position).Y > Bounds.W - ContentMargin - TitleMargin) return;
             scrollbar.OnClickDown(mouse);
             for (int i = Elements.Count - 1; i >= 0; i--)
             {
@@ -666,7 +666,6 @@ namespace OTK.UI.Containers
         public override void OnMouseMove(MouseState mouse)
         {
             if (!IsVisible) return;
-            if (Window is not null && Parent is null) Window.Cursor = MouseCursor.Default;
             scrollbar.OnMouseMove(mouse);
             if (!WithinBounds(ConvertMouseScreenCoords(mouse.Position))) return;
             if (ScrollbarVisibilityType is ScrollbarVisibility.MouseOver && scrollbar.WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
@@ -719,14 +718,10 @@ namespace OTK.UI.Containers
         /// </remarks>
         public override void OnUpdate(float deltaTime, MouseState mouse, KeyboardState keyboard)
         {
-            ApplyLayout();
             base.OnUpdate(deltaTime);
-            var moveAmount = scrollbar.ThumbPosition * Math.Max(MeasureContent() - ContentHeight, 0);
+            ApplyLayoutAndScroll();
             for (int i = Elements.Count - 1; i >= 0; i--)
             {
-                Elements[i].PreEditBottom(Elements[i].Bounds.Y + moveAmount);
-                Elements[i].PreEditTop(Elements[i].Bounds.W + moveAmount);
-                Elements[i].UpdateBounds();
                 Elements[i].OnUpdate(deltaTime);
                 Elements[i].OnUpdate(deltaTime, mouse);
                 Elements[i].OnUpdate(deltaTime, keyboard);
@@ -735,6 +730,18 @@ namespace OTK.UI.Containers
             if (ScrollbarVisibilityType is ScrollbarVisibility.MouseOver && scrollbar.WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
                 scrollbar.IsVisible = true;
             ApplicableLayout?.UpdateButtonTextSize();
+        }
+
+        public void ApplyLayoutAndScroll()
+        {
+            ApplyLayout();
+            var moveAmount = scrollbar.ThumbPosition * Math.Max(MeasureContent() - ContentHeight, 0);
+            for (int i = Elements.Count - 1; i >= 0; i--)
+            {
+                Elements[i].PreEditBottom(Elements[i].Bounds.Y + moveAmount);
+                Elements[i].PreEditTop(Elements[i].Bounds.W + moveAmount);
+                Elements[i].UpdateBounds();
+            }
         }
 
         /// <summary>
@@ -890,16 +897,16 @@ namespace OTK.UI.Containers
         /// Uses OpenGL scissor testing to clip child elements within the panel's content bounds, excluding margins and title area.  
         /// Scroll offset is applied to child element rendering according to the scrollbar's <see cref="ScrollBar.ThumbPosition"/>.
         /// </remarks>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw(ShareClipping);
-            scrollbar.Draw(ShareClipping);
-            _title.Draw(ShareClipping);
+            base.Draw();
+            scrollbar.Draw();
+            _title.Draw();
             GL.Enable(EnableCap.ScissorTest);
             var clipBounds = FindMinClipBounds();
             var clipWidth = clipBounds.Z - clipBounds.X;
@@ -908,9 +915,9 @@ namespace OTK.UI.Containers
             GL.Scissor((int)Math.Round(clipBounds.X + _contentMargin), (int)Math.Round(clipBounds.Y + _contentMargin), (int)Math.Round(clipWidth - scrollbar.Width - _contentMargin), (int)Math.Round(clipContentHeight));
             for (int i = Elements.Count - 1; i >= 0; i--)
             {
-                Elements[i].Draw(ShareClipping);
+                Elements[i].Draw();
             }
-            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
+            GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

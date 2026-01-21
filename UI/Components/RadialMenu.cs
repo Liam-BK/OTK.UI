@@ -391,19 +391,19 @@ namespace OTK.UI.Components
         /// Draws the radial background, the currently selected name and description labels,
         /// and all icon elements. Rendering only occurs when the menu is visible.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw(ShareClipping);
-            Name.Draw(ShareClipping);
-            Description.Draw(ShareClipping);
+            base.Draw();
+            Name.Draw();
+            Description.Draw();
             foreach (var icon in icons)
             {
-                icon.Draw(ShareClipping);
+                icon.Draw();
             }
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);

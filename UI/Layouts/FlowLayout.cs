@@ -22,7 +22,7 @@ namespace OTK.UI.Layouts
     public class FlowLayout : Layout
     {
         /// <summary>
-        /// Loads a <see cref="VerticalLayout"/> from an XML layout definition.
+        /// Loads a <see cref="FlowLayout"/> from an XML layout definition.
         /// Expects optional <c>Size</c> and <c>Spacing</c> fields.
         /// </summary>
         /// <param name="element">The XML element describing the layout.</param>

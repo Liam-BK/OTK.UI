@@ -268,7 +268,7 @@ namespace OTK.UI.Components
         /// <summary>
         /// Draws the checkbox, using the appropriate texture and color for the current state.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);

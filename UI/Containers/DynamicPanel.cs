@@ -106,7 +106,7 @@ namespace OTK.UI.Containers
             var scrollbarThumbColor = element.Element("ScrollBarThumbColor")?.Value.Trim() ?? "1, 1, 1";
             var scrollbarWidth = float.Parse(element.Element("ScrollBarWidth")?.Value ?? "10", CultureInfo.InvariantCulture);
             var anchor = element.Element("Anchor")?.Value.ToLower() ?? "none";
-            var layoutElement = element.Element("ConstraintLayout") ?? element.Element("VerticalLayout") ?? element.Element("HorizontalLayout") ?? element.Element("FlowLayout");
+            var layoutElement = element.Element("ConstraintLayout") ?? element.Element("VerticalLayout") ?? element.Element("HorizontalLayout") ?? element.Element("FlowLayout") ?? element.Element("GridLayout");
 
             var left = float.Parse(bounds?.Element("Left")?.Value ?? "0", CultureInfo.InvariantCulture);
             var bottom = float.Parse(bounds?.Element("Bottom")?.Value ?? "0", CultureInfo.InvariantCulture);
@@ -233,8 +233,10 @@ namespace OTK.UI.Containers
             bottom.OnClickDown(mouse);
             right.OnClickDown(mouse);
             top.OnClickDown(mouse);
-            if (!AnyClasperActive())
+            var converted = ConvertMouseScreenCoords(mouse.Position);
+            if (!AnyClasperActive() && converted.Y > Bounds.W - ContentMargin - TitleMargin && WithinBounds(converted))
             {
+                Console.WriteLine("Title handle clicked");
                 titleHandle.OnClickDown(mouse);
             }
         }
@@ -250,6 +252,20 @@ namespace OTK.UI.Containers
         /// </remarks>
         public override void OnUpdate(float deltaTime, MouseState mouse, KeyboardState keyboard)
         {
+            if (left.WithinBounds(ConvertMouseScreenCoords(mouse.Position)) || right.WithinBounds(ConvertMouseScreenCoords(mouse.Position)) || left.Active || right.Active)
+            {
+                if (Window is not null)
+                {
+                    CursorManager.Request(MouseCursor.ResizeEW);
+                }
+            }
+            else if (bottom.WithinBounds(ConvertMouseScreenCoords(mouse.Position)) || top.WithinBounds(ConvertMouseScreenCoords(mouse.Position)) || bottom.Active || top.Active)
+            {
+                if (Window is not null)
+                {
+                    CursorManager.Request(MouseCursor.ResizeNS);
+                }
+            }
             if (!AnyClasperActive())
                 base.OnUpdate(deltaTime, mouse, keyboard);
         }
@@ -269,7 +285,7 @@ namespace OTK.UI.Containers
             {
                 if (Window is not null)
                 {
-                    Window.Cursor = MouseCursor.ResizeEW;
+                    CursorManager.Request(MouseCursor.ResizeEW);
                     mouseNotDefault = true;
                 }
             }
@@ -277,7 +293,7 @@ namespace OTK.UI.Containers
             {
                 if (Window is not null)
                 {
-                    Window.Cursor = MouseCursor.ResizeNS;
+                    CursorManager.Request(MouseCursor.ResizeNS);
                     mouseNotDefault = true;
                 }
             }

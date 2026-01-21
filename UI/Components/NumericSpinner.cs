@@ -3,6 +3,7 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Common.Input;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using OTK.UI.Containers;
 using OTK.UI.Interfaces;
 using OTK.UI.Managers;
 using OTK.UI.Utility;
@@ -23,6 +24,22 @@ namespace OTK.UI.Components
     /// </remarks>
     public class NumericSpinner : TextField
     {
+        private IUIContainer? _parent = null;
+
+        public override IUIContainer? Parent
+        {
+            get
+            {
+                return _parent;
+            }
+            set
+            {
+                _parent = value;
+                text.Parent = value;
+                increment.Parent = value;
+                decrement.Parent = value;
+            }
+        }
         private readonly LineDSL _solver = new();
 
         /// <summary>
@@ -195,13 +212,6 @@ namespace OTK.UI.Components
         /// <param name="mouse">The current mouse state.</param>
         public override void OnMouseMove(MouseState mouse)
         {
-            if (Window is not null)
-            {
-                if (WithinBounds(ConvertMouseScreenCoords(mouse.Position)) && !increment.WithinBounds(ConvertMouseScreenCoords(mouse.Position)) && !decrement.WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
-                {
-                    Window.Cursor = MouseCursor.IBeam;
-                }
-            }
             if (ClickInBounds)
             {
                 if (ConvertMouseScreenCoords(mouse.Position).X > InitialClickPosition)
@@ -299,7 +309,20 @@ namespace OTK.UI.Components
         /// <param name="mouse">The current state of the mouse.</param>
         public override void OnUpdate(float deltaTime, MouseState mouse)
         {
+            // if (Parent is not null && Parent is Panel panel && ConvertMouseScreenCoords(mouse.Position).Y > panel.Bounds.W - panel.TitleMargin - panel.ContentMargin) return;
+            // else if (Parent is not null && Parent is TabbedPanel tabbedPanel && ConvertMouseScreenCoords(mouse.Position).Y > tabbedPanel.Bounds.W - tabbedPanel.TabHeight - tabbedPanel.ContentMargin) return;
             base.OnUpdate(deltaTime, mouse);
+            if (Window is not null)
+            {
+                if (WithinMinClipBounds(ConvertMouseScreenCoords(mouse.Position)))
+                {
+                    CursorManager.Request(MouseCursor.IBeam);
+                }
+                if (increment.WithinMinClipBounds(ConvertMouseScreenCoords(mouse.Position)) || decrement.WithinMinClipBounds(ConvertMouseScreenCoords(mouse.Position)))
+                {
+                    CursorManager.Request(MouseCursor.Default);
+                }
+            }
             increment.OnUpdate(deltaTime, mouse);
             decrement.OnUpdate(deltaTime, mouse);
         }
@@ -322,24 +345,21 @@ namespace OTK.UI.Components
         /// <summary>
         /// Draws the text field and the increment/decrement buttons.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw(ShareClipping);
-            if (Parent is not null && !ShareClipping)
-            {
-                var clipBounds = FindMinClipBounds();
-                var clipWidth = clipBounds.Z - clipBounds.X;
-                var clipHeight = clipBounds.W - clipBounds.Y;
-                GL.Enable(EnableCap.ScissorTest);
-                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
-            }
-            increment.Draw(true);
-            decrement.Draw(true);
+            base.Draw();
+            var clipBounds = FindMinClipBounds();
+            var clipWidth = clipBounds.Z - clipBounds.X;
+            var clipHeight = clipBounds.W - clipBounds.Y;
+            GL.Enable(EnableCap.ScissorTest);
+            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
+            increment.Draw();
+            decrement.Draw();
             GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);

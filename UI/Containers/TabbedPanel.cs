@@ -329,7 +329,7 @@ namespace OTK.UI.Containers
             for (int i = 0; i < tabElements.Count; i++)
             {
                 var tabElement = tabElements[i];
-                var layoutElement = tabElement.Element("ConstraintLayout") ?? tabElement.Element("VerticalLayout") ?? tabElement.Element("HorizontalLayout") ?? tabElement.Element("FlowLayout");
+                var layoutElement = tabElement.Element("ConstraintLayout") ?? tabElement.Element("VerticalLayout") ?? tabElement.Element("HorizontalLayout") ?? tabElement.Element("FlowLayout") ?? tabElement.Element("GridLayout");
                 Console.WriteLine($"layout element: {layoutElement?.Name.LocalName}");
 
                 tabbedPanel.CurrentTab = i;
@@ -760,7 +760,7 @@ namespace OTK.UI.Containers
                     break;
                 }
             }
-            if (!WithinBounds(ConvertMouseScreenCoords(mouse.Position))) return;
+            if (!WithinBounds(ConvertMouseScreenCoords(mouse.Position)) || ConvertMouseScreenCoords(mouse.Position).Y > Bounds.W - ContentMargin - TabHeight) return;
             foreach (var element in TabElements[CurrentTab])
             {
                 element.OnClickDown(mouse);
@@ -774,7 +774,6 @@ namespace OTK.UI.Containers
         {
             if (!IsVisible) return;
             scrollbar.OnMouseMove(mouse);
-            if (Window is not null) Window.Cursor = MouseCursor.Default;
             if (ScrollbarVisibilityType is ScrollbarVisibility.MouseOver && scrollbar.WithinBounds(ConvertMouseScreenCoords(mouse.Position)))
             {
                 scrollbar.IsVisible = true;
@@ -866,19 +865,19 @@ namespace OTK.UI.Containers
         /// Draws the panel, tabs, scrollbar, and all elements in the current tab.
         /// Applies scissor clipping to prevent drawing outside the content area.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
             bool blendEnabled = GL.IsEnabled(EnableCap.Blend);
             GL.Disable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Blend);
-            base.Draw(ShareClipping);
+            base.Draw();
             foreach (var tab in Tabs)
             {
-                tab.Draw(ShareClipping);
+                tab.Draw();
             }
-            scrollbar.Draw(ShareClipping);
+            scrollbar.Draw();
             GL.Enable(EnableCap.ScissorTest);
             var clipBounds = FindMinClipBounds();
             var clipWidth = clipBounds.Z - clipBounds.X;
@@ -887,9 +886,9 @@ namespace OTK.UI.Containers
             GL.Scissor((int)Math.Round(clipBounds.X + _contentMargin), (int)Math.Round(clipBounds.Y + _contentMargin), (int)Math.Round(clipWidth - scrollbar.Width - _contentMargin), (int)Math.Round(clipContentHeight));
             for (int i = TabElements[CurrentTab].Count - 1; i >= 0; i--)
             {
-                TabElements[CurrentTab][i].Draw(ShareClipping);
+                TabElements[CurrentTab][i].Draw();
             }
-            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
+            GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);

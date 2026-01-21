@@ -588,7 +588,7 @@ namespace OTK.UI.Components
         /// <summary>
         /// Draws the Label element on the screen if IsVisible is true.
         /// </summary>
-        public override void Draw(bool ShareClipping = false)
+        public override void Draw()
         {
             if (!IsVisible) return;
             bool depthTestEnabled = GL.IsEnabled(EnableCap.DepthTest);
@@ -598,17 +598,14 @@ namespace OTK.UI.Components
             GL.UseProgram(program);
             PassUniform();
             GL.BindVertexArray(vao);
-            if (Parent is not null && !ShareClipping)
-            {
-                var clipBounds = FindMinClipBounds();
-                var clipWidth = clipBounds.Z - clipBounds.X;
-                var clipHeight = clipBounds.W - clipBounds.Y;
-                GL.Enable(EnableCap.ScissorTest);
-                GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
-            }
+            var clipBounds = FindMinClipBounds();
+            var clipWidth = clipBounds.Z - clipBounds.X;
+            var clipHeight = clipBounds.W - clipBounds.Y;
+            GL.Enable(EnableCap.ScissorTest);
+            GL.Scissor((int)Math.Round(clipBounds.X), (int)Math.Round(clipBounds.Y), (int)Math.Round(clipWidth), (int)Math.Round(clipHeight));
             GL.DrawElements(BeginMode.Triangles, indices.Count, DrawElementsType.UnsignedInt, 0);
             GL.BindVertexArray(0);
-            if (!ShareClipping) GL.Disable(EnableCap.ScissorTest);
+            GL.Disable(EnableCap.ScissorTest);
             if (depthTestEnabled) GL.Enable(EnableCap.DepthTest);
             else GL.Disable(EnableCap.DepthTest);
             if (blendEnabled) GL.Enable(EnableCap.Blend);
