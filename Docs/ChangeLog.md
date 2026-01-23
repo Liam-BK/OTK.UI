@@ -26,4 +26,10 @@
 
 - Added GridLayout layout type.
 
-- Minor visual improvements to button interaction inside a Panel/TabbedPanel
+- Minor visual improvements to button interaction inside a Panel/TabbedPanel.
+
+- Added a CursorManager class to handle changing the cursor style.
+
+# Patch 1.2.1
+
+- Fixed formatting of Labels with various Layout types

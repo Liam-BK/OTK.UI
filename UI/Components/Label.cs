@@ -84,7 +84,7 @@ namespace OTK.UI.Components
         /// </summary>
         public TextAlign Alignment
         {
-            private get
+            get
             {
                 return _alignment;
             }
@@ -118,8 +118,8 @@ namespace OTK.UI.Components
             set
             {
                 _size = value;
-                _bounds = new Vector4(_origin.X, _origin.Y - _size * 0.5f, _origin.X + _size, _origin.Y + _size * 0.5f);
-                UpdateBounds();
+                Vector2 center = new Vector2((_bounds.X + _bounds.Z) * 0.5f, (_bounds.Y + _bounds.W) * 0.5f);
+                model = Matrix4.CreateScale(value, value, 1) * (Window is not null ? Matrix4.CreateTranslation(center.X - Window.Size.X * InvDPIScaleX * 0.5f, center.Y - Window.Size.Y * InvDPIScaleY * 0.5f, 0) : Matrix4.Identity);
             }
         }
 
@@ -137,19 +137,19 @@ namespace OTK.UI.Components
             set
             {
                 _bounds = value;
+                Size = (_bounds.W - _bounds.Y) * 0.5f;
                 if (Alignment is TextAlign.Left)
                 {
-                    Origin = new Vector2(_bounds.X, (_bounds.Y + _bounds.W) * 0.5f);
+                    Origin = new Vector2(_bounds.X, (_bounds.Y + _bounds.W) * 0.5f - Size);
                 }
                 else if (Alignment is TextAlign.Center)
                 {
-                    Origin = new Vector2((_bounds.X + _bounds.Z) * 0.5f, (_bounds.Y + _bounds.W) * 0.5f);
+                    Origin = new Vector2((_bounds.X + _bounds.Z) * 0.5f, (_bounds.Y + _bounds.W) * 0.5f - Size);
                 }
                 else if (Alignment is TextAlign.Right)
                 {
-                    Origin = new Vector2(_bounds.Z, (_bounds.Y + _bounds.W) * 0.5f);
+                    Origin = new Vector2(_bounds.Z, (_bounds.Y + _bounds.W) * 0.5f - Size);
                 }
-                Size = (_bounds.W - _bounds.Y);
             }
         }
 
